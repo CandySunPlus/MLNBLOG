@@ -16,12 +16,12 @@ return array(
 				'id' => '1'
 			)
 		),
-		'page/{%s}-{%s}-{%d}-{%s}.html' => array(
-			'controller' => '$1', 
-			'action' => '$2', 
+		'page/art-show-{%d}-{%s}.html' => array(
+			'controller' => 'art', 
+			'action' => 'show', 
 			'params' => array(
-				'id' => '$3',
-				'type' => '$4'
+				'id' => '$1',
+				'type' => '$2'
 			)	
 		),
 		'favicon.ico' => array(
