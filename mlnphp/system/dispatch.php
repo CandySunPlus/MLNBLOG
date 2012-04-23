@@ -27,6 +27,6 @@ class Dispatch
 	public function run()
 	{
 		list($this->_controller, $this->_action, $this->_params) = array_values($this->_route->parse());
-		\MLNPHP\MLNPHP::debug($this->_controller, $this->_action, $this->_params);
+		debug($this->_controller, $this->_action, $this->_params);
 	}
 }
