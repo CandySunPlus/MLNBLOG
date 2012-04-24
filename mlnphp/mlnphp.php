@@ -10,6 +10,7 @@ namespace MLNPHP;
 
 use \MLNPHP\System\HttpApplication;
 use \MLNPHP\Helper\ChromePhp;
+use \Exception;
 
 class MLNPHP
 {
@@ -67,8 +68,14 @@ class MLNPHP
         $preFix = self::_getPrefix($clsFlags);
 
         $clsRealPath = $preFix . DS . $clsPath . $clsFileName;
-        self::$_requireClasses[$name] = $clsRealPath;
-        require $clsRealPath;
+
+        if (file_exists($clsRealPath)) {
+            self::$_requireClasses[$name] = $clsRealPath;
+            require $clsRealPath;
+        } else {
+            throw new Exception(sprintf("缺少依赖的类文件 %s", $name));            
+        }
+        
     }
 
     /**

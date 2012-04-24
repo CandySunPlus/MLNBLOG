@@ -4,9 +4,16 @@ use \MLNPHP\System\HttpApplication;
 
 return array(
 	'path' => array(
-		'controller' => APP_PATH . DS . 'controller',
-		'model' => APP_PATH . DS . 'model',
-		'template' => APP_PATH . DS . 'view'
+		'controller' => 'APP\\Controller',
+		'model' => 'APP\\Model',
+		'template' => 'APP\\View'
+	),
+	'page' => array(
+		'404' => array(
+			'controller' => 'error', 
+			'action' => 'notfound', 
+			'params' => array()
+		)
 	),
 	'router' => array(
 		'about' => array(

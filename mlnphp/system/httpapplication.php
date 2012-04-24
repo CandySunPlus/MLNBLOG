@@ -90,6 +90,18 @@ class HttpApplication
 	public function run()
 	{
 		$dispatch = new Dispatch($this->conf->router);
-		$dispatch->run();
+		
+		try {			
+			$dispatch->run();	
+		} catch (Exception $e) {
+			$controller = $this->conf->page['404']['controller'];
+			$action = $this->conf->page['404']['action'];
+			$params = $this->conf->page['404']['params'];
+
+			$realCAP = $dispatch->getRealCAP($controller, $action);
+			$controllerCls = $realCAP['controllerCls'];
+			$action = $realCAP['action'];
+			$dispatch->runCAP($controllerCls, $action, $params);
+		}
 	}
 }
