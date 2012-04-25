@@ -1,8 +1,62 @@
-<?php
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<title>Error: <?php echo $error; ?></title>
+	<style type="text/css">
+	.system_error {
+		border:1px solid #990000;
+		padding:10px 20px;
+		margin:10px;
+		font: 13px/1.4em verdana;
+		background: #fff;
+	}
+	code.source {
+		white-space: pre;
+		background: #fff;
+		padding: 1em;
+		display: block;
+		margin: 1em 0;
+		border: 1px solid #bedbeb;
+	}
+	.system_error .box {
+		margin: 1em 0;
+		background: #ebf2fa;
+		padding: 10px;
+		border: 1px solid #bedbeb;
+	}
+	code.source em { background: #ffc; }
+	</style>
+</head>
+<body>
+	<div class="system_error">
+		<b style="color: #990000">Error: <?php echo $error; ?></b>
+		<?php
+		if ($backtrace = \MLNPHP\System\Error::backtrace(1)) {
+			foreach ($backtrace as $id => $line) {
+				print '<div class="box">';
+				//Skip the first element
+				if ( $id !== 0 ) {
+					// If this is a class include the class name
+					print '<b>Called by '. (isset($line['class']) ? $line['class']. $line['type'] : '');
+					print $line['function']. '()</b>';
+				}
+				// Print file, line, and source
+				print ' in '. $line['file']. ' ['. $line['line']. ']';
+				print '<code class="source">'. $line['source']. '</code>';
+				if (isset($line['args'])) {
+					print '<b>Function Arguments</b>';
+					print dump($line['args']);
+				}
+				print '</div>';
+			}
+		} elseif (isset($file, $line)) {
+			print '<p><b>'. $file. '</b> ('. $line. ')</p>';
+		}
+		?>
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-print_r(debug_backtrace());
-?>
+	</div>
+</body>
+</html>
+
+

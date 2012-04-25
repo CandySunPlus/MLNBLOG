@@ -33,6 +33,9 @@ class HttpApplication
 		$this->modelPath = $this->_getControllerPath();
 		$this->templatePath = $this->_getTemplatePath();
         date_default_timezone_set($this->conf->timezone);
+        if (!$this->conf->debug) {
+        	error_reporting(~E_ALL);
+        }
 	}
 
 	/**

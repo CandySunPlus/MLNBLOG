@@ -3,6 +3,7 @@
 use \MLNPHP\System\HttpApplication;
 
 return array(
+	'debug' => true,
 	'path' => array(
 		'controller' => 'APP\\Controller',
 		'model' => 'APP\\Model',

@@ -15,3 +15,32 @@ function debug()
     $args = func_get_args();
     MLNPHP::debug($args);
 }
+
+/**
+ * 转换HTML安全实体
+ *
+ * @param string $string to encode
+ * 
+ * @return string
+ */
+function h($string)
+{
+	return htmlspecialchars($string, ENT_QUOTES, 'utf-8');
+}
+
+/**
+ * 使用<pre>标签包围字符输出
+ *
+ * @param mixed
+ * 
+ * @return string
+ */
+function dump()
+{
+	$string = '';
+	foreach(func_get_args() as $value)
+	{
+		$string .= '<pre>' . h($value === NULL ? 'NULL' : (is_scalar($value) ? $value : print_r($value, TRUE))) . "</pre>\n";
+	}
+	return $string;
+}

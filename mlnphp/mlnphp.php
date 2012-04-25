@@ -23,13 +23,13 @@ class MLNPHP
      * @return void
      */
     public static function initialize()
-    {        
+    {    
+        ob_start();    
         self::$_requireClasses = array();
         spl_autoload_register('self::autoload');
         
         set_error_handler(array('\\MLNPHP\\System\\Error', 'handler'));
         register_shutdown_function(array('\\MLNPHP\\System\\Error', 'fatal'));
-        
     }
 
     /**

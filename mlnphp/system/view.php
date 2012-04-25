@@ -28,11 +28,12 @@ class View {
      * @param string $key 变量名称
      * @param mixed $value 变量值
      * 
-     * @return void
+     * @return View
      */
     public function assgin($key, $value)
     {
         $this->_vars[$key] = $value;
+        return $this;
     }
     
     /**
@@ -103,6 +104,7 @@ class View {
     {
         $templatePath = $this->_getTemplatePath($template, $type);        
         extract($this->_vars);
+        ob_get_clean();
         ob_start();
         require $templatePath;
         return ob_get_clean();

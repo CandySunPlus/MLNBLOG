@@ -40,7 +40,7 @@ class Dispatch
 		if (class_exists($controllerCls) && method_exists($controllerCls, $action)) {
 			$this->runCAP($controllerCls, $action, $this->_params);
 		} else {
-			throw new Exception('Action not exists');
+			throw new Exception('Action not exists', 404);
 		}
 	}
 
@@ -76,7 +76,15 @@ class Dispatch
 			$controllerInstance =  new $controllerCls($params);
 			$controllerInstance->run($action);
 		} catch (Exception $e) {
-			header('HTTP/1.0 404 Not Found');
+			switch ($e->getCode()) {
+				case 404:
+					header('HTTP/1.0 404 Not Found');
+					break;				
+				default:
+					throw $e;
+					break;
+			}
+			
 		}
 		
 	}

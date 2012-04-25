@@ -3,7 +3,7 @@ namespace APP\Controller;
 
 use \MLNPHP\System\ControllerBase;
 
-class Error extends ControllerBase
+class Article extends ControllerBase
 {
 	protected function initialize()
 	{
@@ -21,8 +21,8 @@ class Error extends ControllerBase
 		return true;
 	}
 
-	public function notfoundAction()
+	public function showAction()
 	{
-		$this->output($this->view->render('404'));
+		$this->output($this->request->get('id'));
 	}
 }

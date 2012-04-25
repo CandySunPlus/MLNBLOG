@@ -3,6 +3,7 @@
 use \MLNPHP\System\HttpApplication;
 
 return array(
+	'debug' => true,
 	'path' => array(
 		'controller' => 'APP\\Controller',
 		'model' => 'APP\\Model',
@@ -23,12 +24,11 @@ return array(
 				'id' => '1'
 			)
 		),
-		'page/art-show-{%d}-{%s}.html' => array(
-			'controller' => 'art', 
-			'action' => 'show', 
+		'page/art-show-{%d}.html' => array(
+			'controller' => 'article', 
+			'action' => HttpApplication::defaultAction, 
 			'params' => array(
-				'id' => '$1',
-				'type' => '$2'
+				'id' => '$1'
 			)	
 		),
 		'favicon.ico' => array(

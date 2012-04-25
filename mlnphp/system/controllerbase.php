@@ -2,6 +2,8 @@
 namespace MLNPHP\System;
 
 use \MLNPHP\Helper\Request;
+use \MLNPHP\Helper\Response;
+use \MLNPHP\System\View;
 /**
  * 控制器基类
  * 
@@ -10,12 +12,15 @@ use \MLNPHP\Helper\Request;
 abstract class ControllerBase
 {
 	protected $request;
+	protected $response;
     protected $action;
+    protected $view;
 
 	public function __construct($params)
 	{
 		$this->request = Request::getInstance();
 		$this->request->set($params, Request::GET);	
+		$this->view = new View();
 	}
 
 	/**
@@ -31,6 +36,18 @@ abstract class ControllerBase
 		$this->initialize();
 		$this->$action();
 		$this->destory();
+	}
+
+	/**
+	 * 输出页面
+	 * 
+	 * @param string $content 页面内容
+	 * 
+	 * @return void
+	 */
+	public function output($content)
+	{
+		Response::output($content);
 	}
 
 	/**
