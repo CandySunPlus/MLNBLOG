@@ -76,7 +76,6 @@ class Dispatch
 			$controllerInstance =  new $controllerCls($params);
 			$controllerInstance->run($action);
 		} catch (Exception $e) {
-			debug($e);
 			header('HTTP/1.0 404 Not Found');
 		}
 		

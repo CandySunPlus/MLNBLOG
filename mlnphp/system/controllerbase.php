@@ -9,7 +9,8 @@ use \MLNPHP\Helper\Request;
  */
 abstract class ControllerBase
 {
-	public $request;
+	protected $request;
+    protected $action;
 
 	public function __construct($params)
 	{
@@ -26,9 +27,10 @@ abstract class ControllerBase
 	 */
 	public function run($action) 
 	{
-		$init = $this->initialize(get_called_class(), $action);
+        $this->action = $action;
+		$this->initialize();
 		$this->$action();
-		$this->destory(get_called_class(), $action);
+		$this->destory();
 	}
 
 	/**
@@ -36,12 +38,12 @@ abstract class ControllerBase
 	 * 
 	 * @return void
 	 */
-	abstract protected function initialize($controllerCls, $action);
+	abstract protected function initialize();
 
 	/**
 	 * 在调用后
 	 * 
 	 * @return void
 	 */
-	abstract protected function destory($controllerCls, $action);
+	abstract protected function destory();
 }

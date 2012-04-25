@@ -27,11 +27,12 @@ class HttpApplication
 	 * @return void
 	 */
 	public function __construct($config)
-	{
+	{        
 		$this->conf = $config;
 		$this->controllerPath = $this->_getControllerPath();
 		$this->modelPath = $this->_getControllerPath();
 		$this->templatePath = $this->_getTemplatePath();
+        date_default_timezone_set($this->conf->timezone);
 	}
 
 	/**

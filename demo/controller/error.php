@@ -5,23 +5,23 @@ use \MLNPHP\System\ControllerBase;
 
 class Error extends ControllerBase
 {
-	protected function initialize($controllerCls, $action)
+	protected function initialize()
 	{
-		$this->_verification($controllerCls, $action);
+		$this->_verification();
 	}
 
-	protected function destory($controllerCls, $action)
+	protected function destory()
 	{
 		
 	}
 
-	private function _verification($controllerCls, $action) 
+	private function _verification() 
 	{
 		return true;
 	}
 
 	public function notfoundAction()
 	{
-
+        echo $s;
 	}
 }

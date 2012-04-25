@@ -38,5 +38,6 @@ return array(
 				'id' => '1'
 			)
 		)
-	)
+	),
+    'timezone' => 'Asia/Shanghai'
 );

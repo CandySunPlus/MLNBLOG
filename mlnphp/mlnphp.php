@@ -23,9 +23,13 @@ class MLNPHP
      * @return void
      */
     public static function initialize()
-    {
+    {        
         self::$_requireClasses = array();
         spl_autoload_register('self::autoload');
+        
+        set_error_handler(array('\\MLNPHP\\System\\Error', 'handler'));
+        register_shutdown_function(array('\\MLNPHP\\System\\Error', 'fatal'));
+        
     }
 
     /**
@@ -65,7 +69,7 @@ class MLNPHP
             $clsPath .= strtolower($path) . DS;
         }
 
-        $preFix = self::_getPrefix($clsFlags);
+        $preFix = self::getPrefix($clsFlags);
 
         $clsRealPath = $preFix . DS . $clsPath . $clsFileName;
 
@@ -85,7 +89,7 @@ class MLNPHP
      * 
      * @return string
      */
-    private static function _getPrefix($clsFlags)
+    public static function getPrefix($clsFlags)
     {
         switch ($clsFlags) {
             case 'MLNPHP':
