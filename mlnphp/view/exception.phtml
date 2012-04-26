@@ -34,7 +34,8 @@
 		<p><?php echo str_replace("\n", "<br />", $exception->getMessage()); ?></p>
 		<?php
 		$x = FALSE;
-		if ($backtrace = $exception->getTrace()) {
+		if ($exception->getTrace()) {
+            $backtrace = $exception->getTrace();
 			foreach ($backtrace as $id => $line) {
 				if (!isset($line['file'],$line['line'])) continue;
 				$x = TRUE;

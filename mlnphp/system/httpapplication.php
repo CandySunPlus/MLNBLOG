@@ -105,6 +105,8 @@ class HttpApplication
 			$realCAP = $dispatch->getRealCAP($controller, $action);
 			$controllerCls = $realCAP['controllerCls'];
 			$action = $realCAP['action'];
+            
+            header('HTTP/1.0 404 File Not Found');
 			$dispatch->runCAP($controllerCls, $action, $params);
 		}
 	}
