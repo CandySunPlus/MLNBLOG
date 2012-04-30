@@ -2,6 +2,7 @@
 namespace APP\Controller;
 
 use \MLNPHP\System\ControllerBase;
+use \MLNPHP\ORM\Adapter\Mysql\Mysql;
 
 class Article extends ControllerBase
 {
@@ -23,6 +24,7 @@ class Article extends ControllerBase
 
 	public function showAction()
 	{
+		$mysql = Mysql::getInstance('devel');
 		$this->output($this->request->get('id'));
 	}
 }

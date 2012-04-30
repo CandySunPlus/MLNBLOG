@@ -14,6 +14,10 @@ abstract class AdapterBase
     protected $conf;
     protected $lastQuery;
     protected $tables;
+    protected $db;
+
+    const MYSQL = 'mysql';
+    const SQLITE = 'sqlite';
 
     /**
      * 获取数据库适配器的实例
@@ -25,9 +29,12 @@ abstract class AdapterBase
     public static function getInstance($dbConfigName)
     {
         static $instance = array();
+        
+        $adapterType = ucfirst(MLNPHP::getApplication()->conf->db[$dbConfigName]['type']);
+        $adapterClass = "\\MLNPHP\\ORM\\Adapter\\$adapterType\\$adapterType";
 
-        if (isset($instance[$dbConfigName])) {
-            $instance[$dbConfigName] = new self($dbConfigName);
+        if (!isset($instance[$dbConfigName])) {
+            $instance[$dbConfigName] = new $adapterClass($dbConfigName);
         }
 
         return $instance[$dbConfigName];
@@ -45,7 +52,7 @@ abstract class AdapterBase
     /**
      * 连接数据库
      * 
-     * @return void
+     * @return resource
      */
     abstract protected function conn();
 
@@ -75,9 +82,11 @@ abstract class AdapterBase
     /**
      * 数据库的Fetch方法
      * 
+     * @param resource $resource Query执行资源
+     * 
      * @return ArrayAccess
      */
-    abstract protected function fetch();    
+    abstract protected function fetch($resource);    
 
     /**
      * 备份数据库

@@ -98,16 +98,21 @@ class HttpApplication
 		try {			
 			$dispatch->run();	
 		} catch (Exception $e) {
-			$controller = $this->conf->page['404']['controller'];
-			$action = $this->conf->page['404']['action'];
-			$params = $this->conf->page['404']['params'];
+			if ($e->getCode() == 404) {
+				$controller = $this->conf->page['404']['controller'];
+				$action = $this->conf->page['404']['action'];
+				$params = $this->conf->page['404']['params'];
 
-			$realCAP = $dispatch->getRealCAP($controller, $action);
-			$controllerCls = $realCAP['controllerCls'];
-			$action = $realCAP['action'];
-            
-            header('HTTP/1.0 404 File Not Found');
-			$dispatch->runCAP($controllerCls, $action, $params);
+				$realCAP = $dispatch->getRealCAP($controller, $action);
+				$controllerCls = $realCAP['controllerCls'];
+				$action = $realCAP['action'];
+	            
+	            header('HTTP/1.0 404 File Not Found');
+				$dispatch->runCAP($controllerCls, $action, $params);
+			} else {
+				throw $e;
+				
+			}
 		}
 	}
 }
