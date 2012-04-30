@@ -4,6 +4,7 @@ namespace MLNPHP\System;
 use \MLNPHP\Helper\Request;
 use \MLNPHP\Helper\Response;
 use \MLNPHP\System\View;
+
 /**
  * 控制器基类
  * 
