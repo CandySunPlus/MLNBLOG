@@ -40,7 +40,7 @@ class Mysql extends AdapterBase
         if (!mysql_select_db($this->conf['dbname'])) {
             throw new Exception(sprintf('无法选取数据库 %s', $this->conf['dbname']));
         }
-        $this->db = $his->conf['dbname'];
+        $this->db = $this->conf['dbname'];
     }
 
     /**
@@ -48,11 +48,13 @@ class Mysql extends AdapterBase
      * 
      * @return ArrayAccess
      */
-    protected function getTables()
+    public function getTables()
     {
-        $rs = $this->query(sprintf('SHOW TABLES FROM %s'), $this->db);
-        
+        $rs = $this->query(sprintf('SHOW TABLES FROM %s', $this->db));
+
         $tables = $this->fetch($rs);
+
+        return $tables;
     }
 
     /**
@@ -62,7 +64,7 @@ class Mysql extends AdapterBase
      * 
      * @return mixed
      */
-    protected function query($sql)
+    public function query($sql)
     {
         $result = mysql_query($sql);
         if (false === $result) {
@@ -79,9 +81,14 @@ class Mysql extends AdapterBase
      * 
      * @return ArrayAccess
      */
-    protected function fetch($resource)
+    public function fetch($resource)
     {
+        $result = array();
+        while ($row = mysql_fetch_array($resource, MYSQL_ASSOC)) {
+            $result[] = $row;
+        }
 
+        return $result;
     }
 
     /**
@@ -89,7 +96,7 @@ class Mysql extends AdapterBase
      * 
      * @return void
      */
-    protected function backupDb()
+    public function backupDb()
     {
 
     }

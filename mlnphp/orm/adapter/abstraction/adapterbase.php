@@ -68,7 +68,7 @@ abstract class AdapterBase
      * 
      * @return ArrayAccess
      */
-    abstract protected function getTables();
+    abstract public function getTables();
 
     /**
      * 数据库的Query方法
@@ -77,7 +77,7 @@ abstract class AdapterBase
      * 
      * @return mixed
      */
-    abstract protected function query($sql);
+    abstract public function query($sql);
 
     /**
      * 数据库的Fetch方法
@@ -86,13 +86,23 @@ abstract class AdapterBase
      * 
      * @return ArrayAccess
      */
-    abstract protected function fetch($resource);    
+    abstract public function fetch($resource);    
 
     /**
      * 备份数据库
      * 
      * @return void
      */
-    abstract protected function backupDb();
+    abstract public function backupDb();
+
+    /**
+     * 最后执行的SQL
+     * 
+     * @return void
+     */
+    public function getLastQuery()
+    {
+        echo $this->lastQuery;
+    }
 
 }

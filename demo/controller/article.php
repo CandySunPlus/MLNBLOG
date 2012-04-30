@@ -25,6 +25,8 @@ class Article extends ControllerBase
 	public function showAction()
 	{
 		$mysql = Mysql::getInstance('devel');
+		$mysql->getLastQuery();
+		var_dump($mysql->getTables());
 		$this->output($this->request->get('id'));
 	}
 }
