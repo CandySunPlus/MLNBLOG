@@ -45,9 +45,9 @@ abstract class TableBase
      */
     protected function getPrimaryKey()
     {
-        foreach ($this->fields as $fieldName => $fieldData) {
-            if ($fieldData['isPrimaryKey']) {                
-                return $fieldName;
+        foreach ($this->fields as $field) {
+            if ($field->isPrimaryKey) {                
+                return $field->name;
             }
         }
 

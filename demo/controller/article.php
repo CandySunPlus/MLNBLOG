@@ -26,7 +26,7 @@ class Article extends ControllerBase
 	{
 		$mysql = Mysql::getInstance('devel');
 		$mysql->getLastQuery();
-		var_dump($mysql->getTables());
+		debug($mysql->getTables());
 		$this->output($this->request->get('id'));
 	}
 }

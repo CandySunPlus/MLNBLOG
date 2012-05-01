@@ -23,6 +23,7 @@ class MysqlTable extends TableBase
         $fields = $this->adapter->fetch($rs);
 
         $return = array();
+
         foreach ($fields as $fieldData) {
             $return[] = $this->_getFieldByData($fieldData);
         }
@@ -37,7 +38,7 @@ class MysqlTable extends TableBase
      */
     protected function backup()
     {
-
+        //TODO..
     }
 
     /**
@@ -51,12 +52,12 @@ class MysqlTable extends TableBase
     {
         
         $field = new stdClass;
-        $typeAndScope = $this->_parseTypeAndScope($fieldData['Type']);
-        
-        $field->name = $fieldData['Field'];
+        $typeAndScope = $this->_parseTypeAndScope($fieldData['Type']);        
+
         $field->type = $typeAndScope->type;
         $field->scope = $typeAndScope->scope;
-        $field->null = $fieldData['Null'];
+        $field->name = $fieldData['Field'];
+        $field->null = ('NO' == $fieldData['Null']) ? false : true;
         $field->default = $fieldData['Default'];
         $field->extra = $fieldData['Extra'];
         $field->isPrimaryKey = ('PRI' == $fieldData['Key']) ? true : false;
@@ -73,6 +74,18 @@ class MysqlTable extends TableBase
      */
     private function _parseTypeAndScope($type)
     {
-        $pattern = '//';
+        $tmp = new stdClass;
+        $pattern = '/^([a-z]+)$|^([a-z]+)\((.+)\)$/';
+        if (false !== preg_match($pattern, $type, $match)) {
+            if (!isset($match[2])) {
+                $tmp->type = $match[1];
+                $tmp->scope = null;
+            } else {
+                $tmp->type = $match[2];
+                $tmp->scope = explode(',', $match[3]);
+            }
+        }
+
+        return $tmp;
     }
 }
