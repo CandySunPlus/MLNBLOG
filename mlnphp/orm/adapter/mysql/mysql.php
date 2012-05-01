@@ -11,6 +11,12 @@ use \Exception;
  */
 class Mysql extends AdapterBase
 {
+    protected static $dataType = array(
+        'int' => 'integer',
+        'varchar' => 'string',
+        'text' => 'string'
+    );
+    
     /**
      * 连接数据库
      * 
@@ -55,7 +61,7 @@ class Mysql extends AdapterBase
 
         $return = array();
         foreach ($tables as $tableName) {
-            $return[] = new MysqlTable($this, $tableName['Tables_in_demo']);
+            $return[$tableName['Tables_in_demo']] = new MysqlTable($this, $tableName['Tables_in_demo']);
         }
 
         return $return;

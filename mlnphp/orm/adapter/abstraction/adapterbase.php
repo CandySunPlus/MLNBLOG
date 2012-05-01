@@ -13,8 +13,9 @@ abstract class AdapterBase
     protected $connect;
     protected $conf;
     protected $lastQuery;
-    protected $tables;
     protected $db;
+    public $tables;
+    protected static $dataType;
 
     const MYSQL = 'mysql';
     const SQLITE = 'sqlite';
@@ -38,6 +39,16 @@ abstract class AdapterBase
         }
 
         return $instance[$dbConfigName];
+    }
+
+    /**
+     * 获取数据库的数据类型
+     * 
+     * @return array
+     */
+    public static function getDataType()
+    {
+        return static::$dataType;
     }
 
     private function __construct($dbConfigName)
@@ -66,7 +77,7 @@ abstract class AdapterBase
     /**
      * 获取数据库中的表
      * 
-     * @return ArrayAccess
+     * @return array
      */
     abstract public function getTables();
 
@@ -84,7 +95,7 @@ abstract class AdapterBase
      * 
      * @param resource $resource Query执行资源
      * 
-     * @return ArrayAccess
+     * @return array
      */
     abstract public function fetch($resource);    
 

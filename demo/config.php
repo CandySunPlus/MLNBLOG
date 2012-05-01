@@ -42,6 +42,7 @@ return array(
 	),
     'timezone' => 'Asia/Shanghai',
     'db' => array(
+        'use' => 'devel',
     	'devel' => array(
     		'type' => AdapterBase::MYSQL,
     		'host' => '127.0.0.1:3306',

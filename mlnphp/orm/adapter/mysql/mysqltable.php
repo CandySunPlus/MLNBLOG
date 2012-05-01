@@ -25,7 +25,7 @@ class MysqlTable extends TableBase
         $return = array();
 
         foreach ($fields as $fieldData) {
-            $return[] = $this->_getFieldByData($fieldData);
+            $return[$fieldData['Field']] = $this->_getFieldByData($fieldData);
         }
 
         return $return;

@@ -44,3 +44,16 @@ function dump()
 	}
 	return $string;
 }
+
+/**
+ * 返回模型
+ * 
+ * @param string $modelName 模型名称
+ * 
+ * @return Model
+ */
+function model($modelName)
+{
+    $conf = MLNPHP::getApplication()->conf;
+    return $conf->path['model'] . '\\' . $modelName;
+}
