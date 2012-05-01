@@ -57,7 +57,7 @@ class MysqlTable extends TableBase
         $field->type = $typeAndScope->type;
         $field->scope = $typeAndScope->scope;
         $field->name = $fieldData['Field'];
-        $field->null = ('NO' == $fieldData['Null']) ? false : true;
+        $field->null = ('NO' == $fieldData['Null']) ? true : false;
         $field->default = $fieldData['Default'];
         $field->extra = $fieldData['Extra'];
         $field->isPrimaryKey = ('PRI' == $fieldData['Key']) ? true : false;
