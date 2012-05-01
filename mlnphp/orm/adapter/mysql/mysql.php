@@ -46,15 +46,19 @@ class Mysql extends AdapterBase
     /**
      * 获取数据库中的表
      * 
-     * @return ArrayAccess
+     * @return array
      */
     public function getTables()
     {
         $rs = $this->query(sprintf('SHOW TABLES FROM %s', $this->db));
-
         $tables = $this->fetch($rs);
 
-        return $tables;
+        $return = array();
+        foreach ($tables as $tableName) {
+            $return[] = new MysqlTable($this, $tableName['Tables_in_demo']);
+        }
+
+        return $return;
     }
 
     /**
@@ -79,7 +83,7 @@ class Mysql extends AdapterBase
      * 
      * @param resource $resource Query执行资源
      * 
-     * @return ArrayAccess
+     * @return array
      */
     public function fetch($resource)
     {

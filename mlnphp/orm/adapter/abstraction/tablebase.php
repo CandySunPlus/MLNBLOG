@@ -8,14 +8,14 @@ namespace MLNPHP\ORM\Adapter\Abstraction;
  */
 abstract class TableBase
 {
-    protected $db;
-    protected $primaryKey;
-    protected $fields;
-    protected $tableName;
+    protected $adapter;
+    public $primaryKey;
+    public $fields;
+    public $tableName;
 
-    public function __construct($db, $tableName)
+    public function __construct($adapter, $tableName)
     {
-        $this->db = $db;
+        $this->adapter = $adapter;
         $this->tableName = $tableName;
         $this->getTable();
     }
@@ -23,7 +23,7 @@ abstract class TableBase
     /**
      * 获取表中的字段
      * 
-     * @return ArrayAccess
+     * @return array
      */
     abstract protected function getFields();
 
@@ -41,15 +41,17 @@ abstract class TableBase
     /**
      * 获取主键
      * 
-     * @return string
+     * @return mixed
      */
     protected function getPrimaryKey()
     {
         foreach ($this->fields as $fieldName => $fieldData) {
-            if ($fieldData->isPrimaryKey) {                
+            if ($fieldData['isPrimaryKey']) {                
                 return $fieldName;
             }
         }
+
+        return null;
     }
 
     /**
