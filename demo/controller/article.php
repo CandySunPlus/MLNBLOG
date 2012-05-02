@@ -25,7 +25,7 @@ class Article extends ControllerBase
 	{
 		$articleModel = model('Article');
 		$articleEntity = $articleModel::create();
-		$articleEntity->title = '';
+		$articleEntity->title = 's';
 		$articleEntity->save();
 		//$mysql->getLastQuery();
 		//debug($mysql->getTables());

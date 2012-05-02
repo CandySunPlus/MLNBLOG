@@ -20,6 +20,7 @@ abstract class Model
     protected static $adapter;
     protected static $dataType;
     protected $data;
+    protected $sqlBuilder;
 
     const MYSQL = '\\MLNPHP\\ORM\\Adapter\\Mysql\\Mysql';
 
@@ -48,11 +49,13 @@ abstract class Model
     private function _init()
     {
         $dbConfigName = MLNPHP::getApplication()->conf->db['use'];
-        $tableName = strtolower(array_pop(explode('\\', get_called_class())));
+        $model = explode('\\', get_called_class());
+        $tableName = strtolower(array_pop($model));
         static::$adapter = call_user_func(static::$dbType . '::getInstance', $dbConfigName);        
         static::$dataType = call_user_func(static::$dbType . '::getDataType');
         static::$table = static::$adapter->tables[$tableName];
         static::$primaryKey = static::$table->primaryKey;
+        $this->sqlBuilder = new SQLBuilder(static::$table);
     }
 
     /**
@@ -201,11 +204,20 @@ abstract class Model
      */
     public function save()
     {
+//        $sql = (string)$this->sqlBuilder->select('id', 'title', 'content', 'typeId')
+//                ->alias('content', 'context')
+//                ->where('id', '=', 10)
+//                ->where('title', '=', 's')
+//                ->orWhere('id', '=', 1)
+//                ->orderBy('id')
+//                ->orderBy('typeId', 'ASC')
+//                ->limit(10);
+//        debug($sql);
         if (null !== $this->data[static::$primaryKey]) {
             $id = $this->data[static::$primaryKey];
         } else {
-            $sql = sprintf('INSERT INTO %s ');
-            static::$adapter->query($sql);
+            //$sql = sprintf('INSERT INTO %s ');
+            //static::$adapter->query($sql);
         }
     }
 
@@ -220,6 +232,9 @@ abstract class Model
             $id = $this->data[static::$primaryKey];
         }
     } 
-
-
+    
+    public function fetch()
+    {
+        
+    }
 }
