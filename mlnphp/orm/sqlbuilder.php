@@ -8,7 +8,7 @@ use \Exception;
  * @package MLNPHP
  */
 
-/**
+/*
 $sql = (string)$this->sqlBuilder->select('id', 'title', 'content', 'typeId')
     ->alias('content', 'context')
     ->where('id', '=', 10)
@@ -68,7 +68,7 @@ class SQLBuilder
     /**
      * 选取字段
      * 
-     * @return $this;
+     * @return SQLBuilder
      */
     public function select()
     {
@@ -82,11 +82,11 @@ class SQLBuilder
     }
     
     /**
-     * 选取字段
+     * 字段别名
      * 
      * @param string $fields 字段名，多个用,分割 
      * 
-     * @return $this;
+     * @return SQLBuilder
      */
     public function alias($fields, $alias)
     {
@@ -249,7 +249,12 @@ class SQLBuilder
             $set[] = $field . '=' . $this->_quote($value);
         }
         
-        return sprintf('UPDATE %s SET %s WHERE %s',$this->table->tableName, implode(', ', $set), $condition);
+        return sprintf(
+            'UPDATE %s SET %s WHERE %s',
+            $this->table->tableName, 
+            implode(', ', $set), 
+            $condition
+        );
     }
     
     
@@ -267,7 +272,12 @@ class SQLBuilder
         foreach ($values as &$value) {
             $value = $this->_quote($value);
         }
-        return sprintf('INSERT INTO %s (%s) VALUES(%s)', $this->table->tableName, implode(', ', $fields), implode(', ', $values));
+        return sprintf(
+            'INSERT INTO %s (%s) VALUES(%s)', 
+            $this->table->tableName, 
+            implode(', ', $fields),
+            implode(', ', $values)
+        );
     }
     
     /**
@@ -283,7 +293,15 @@ class SQLBuilder
         $orderBy = $this->_getOrderBy();
         $limit = $this->_getlimit();
         
-        $sql = sprintf('SELECT %s FROM %s %s %s %s %s', $select, $this->table->tableName, $where, $groupBy, $orderBy, $limit);
+        $sql = sprintf(
+            'SELECT %s FROM %s %s %s %s %s', 
+            $select, 
+            $this->table->tableName, 
+            $where, 
+            $groupBy,
+            $orderBy, 
+            $limit
+        );
         $this->_clear();
         return $sql;
     }

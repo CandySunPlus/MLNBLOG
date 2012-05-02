@@ -1,6 +1,7 @@
 <?php
 
 use \MLNPHP\System\HttpApplication;
+use \MLNPHP\ORM\Adapter\Abstraction\AdapterBase;
 
 return array(
 	'debug' => true,
@@ -24,12 +25,11 @@ return array(
 				'id' => '1'
 			)
 		),
-		'page/art-show-{%d}-{%s}.html' => array(
-			'controller' => 'art', 
-			'action' => 'show', 
+		'page/art-show-{%d}.html' => array(
+			'controller' => 'article', 
+			'action' => HttpApplication::defaultAction, 
 			'params' => array(
-				'id' => '$1',
-				'type' => '$2'
+				'id' => '$1'
 			)	
 		),
 		'favicon.ico' => array(
@@ -40,5 +40,15 @@ return array(
 			)
 		)
 	),
-    'timezone' => 'Asia/Shanghai'
+    'timezone' => 'Asia/Shanghai',
+    'db' => array(
+        'use' => 'devel',
+    	'devel' => array(
+    		'type' => AdapterBase::MYSQL,
+    		'host' => '127.0.0.1:3306',
+    		'username' => 'root',
+    		'password' => 'root',
+    		'dbname' => 'demo'
+    	)
+    )
 );
