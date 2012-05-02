@@ -204,7 +204,7 @@ abstract class Model
         if (null !== $this->data[static::$primaryKey]) {
             $id = $this->data[static::$primaryKey];
         } else {
-            $sql = sprintf('INSERT INTO %s ');
+            //$sql = sprintf('INSERT INTO %s ');
             static::$adapter->query($sql);
         }
     }
