@@ -105,6 +105,13 @@ abstract class AdapterBase
      * @return void
      */
     abstract public function backupDb();
+    
+    /**
+     * 获取最近插入一条的ID
+     * 
+     * @return int 
+     */
+    abstract public function insertId();
 
     /**
      * 最后执行的SQL

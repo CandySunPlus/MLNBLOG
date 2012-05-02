@@ -7,6 +7,17 @@ use \Exception;
  * 
  * @package MLNPHP
  */
+
+/**
+$sql = (string)$this->sqlBuilder->select('id', 'title', 'content', 'typeId')
+    ->alias('content', 'context')
+    ->where('id', '=', 10)
+    ->where('title', '=', 's')
+    ->orWhere('id', '=', 1)
+    ->orderBy('id')
+    ->orderBy('typeId', 'ASC')
+    ->limit(10); 
+*/
 class SQLBuilder
 {
     public $sql;
@@ -29,6 +40,32 @@ class SQLBuilder
     }
     
     /**
+     * 清除
+     * 
+     * @return void 
+     */
+    private function _clear()
+    {
+        $this->select = array();
+        $this->where = array();
+        $this->orderBy = array();
+        $this->groupBy = '';
+        $this->limit =  array();
+    }
+    
+    /**
+     * 增加引号
+     * 
+     * @param string $value 值
+     * 
+     * @return string 
+     */
+    private function _quote($value)
+    {
+        return "'" . $value . "'";
+    }
+    
+    /**
      * 选取字段
      * 
      * @return $this;
@@ -36,8 +73,11 @@ class SQLBuilder
     public function select()
     {
         $fields = func_get_args();
-        $this->select = array_combine($fields, $fields);
-       
+        if (!empty($fields)) {
+             $this->select = array_combine($fields, $fields);
+        } else {
+            $this->select = array('*' => '*');
+        }
         return $this;
     }
     
@@ -194,6 +234,43 @@ class SQLBuilder
     }
     
     /**
+     * 更新
+     * 
+     * @param array $values 键值表
+     * @param string $condition 条件
+     * 
+     * @return string;
+     */
+    public function update($values, $condition)
+    {
+        $set = array();
+        foreach ($values as $field => $value)
+        {
+            $set[] = $field . '=' . $this->_quote($value);
+        }
+        
+        return sprintf('UPDATE %s SET %s WHERE %s',$this->table->tableName, implode(', ', $set), $condition);
+    }
+    
+    
+    /**
+     * 插入
+     * 
+     * @param array $values 键值表
+     * 
+     * @return string;
+     */
+    public function insert($values)
+    {
+        $fields = array_keys($values);
+        $values = array_values($values);
+        foreach ($values as &$value) {
+            $value = $this->_quote($value);
+        }
+        return sprintf('INSERT INTO %s (%s) VALUES(%s)', $this->table->tableName, implode(', ', $fields), implode(', ', $values));
+    }
+    
+    /**
      * SQL输出
      * 
      * @return string 
@@ -207,6 +284,7 @@ class SQLBuilder
         $limit = $this->_getlimit();
         
         $sql = sprintf('SELECT %s FROM %s %s %s %s %s', $select, $this->table->tableName, $where, $groupBy, $orderBy, $limit);
+        $this->_clear();
         return $sql;
     }
     

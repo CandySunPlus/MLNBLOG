@@ -28,13 +28,15 @@ abstract class Model
     {
         $this->_init();
         $this->data = array();
-        if (null == $id) {            
-            $this->data[static::$primaryKey] = null;
+        if (null == $id) {       
             $this->_fillData();
+            unset($this->data[static::$primaryKey]);
         } elseif (is_numeric($id)) {
             $this->data[static::$primaryKey] = $id;
-            //$sql = sprintf("SELECT * FROM %s WHERE %s='%s'", static::$table->tableName, static::$primaryKey, $id);
-            //$data = static::$adapter->query($sql);
+            $data = current($this->select('*')->where(static::$primaryKey, '=', $id)->fetch());
+            if (false === $data) {
+                throw new Exception("无法获取指定主键实体");
+            }
             $this->_fillData($data);
         } else {
             throw new Exception("无法获取指定主键实体");            
@@ -90,7 +92,6 @@ abstract class Model
      */
     public function __set($field, $value)
     {
-        $this->_validate($field, $value);
         $this->data[$field] = $value;
     }
 
@@ -104,8 +105,13 @@ abstract class Model
     private function _fillData($data = null)
     {
         foreach (static::$table->fields as $fieldName => $field) {
-            
+            if (null === $data) {
+                $this->data[$fieldName] = $field->default;
+            } else {
+                $this->data[$fieldName] = $data[$fieldName];
+            }
         }
+        
     }
 
     /**
@@ -150,7 +156,7 @@ abstract class Model
      */
     private function _validateInteger($value, $scope)
     {
-        if (!is_integer($value)) {
+        if (!is_integer((int)$value)) {
             throw new Exception(sprintf("您所指定的字段的值 %s 不符合字段类型 Integer", $value));
         }
 
@@ -169,7 +175,7 @@ abstract class Model
      */
     private function _validateString($value, $scope)
     {
-        if (!is_string($value)) {
+        if (!is_string((string)$value)) {
             throw new Exception(sprintf("您所指定的字段的值 %s 不符合字段类型 String", $value));
         }
 
@@ -204,21 +210,21 @@ abstract class Model
      */
     public function save()
     {
-//        $sql = (string)$this->sqlBuilder->select('id', 'title', 'content', 'typeId')
-//                ->alias('content', 'context')
-//                ->where('id', '=', 10)
-//                ->where('title', '=', 's')
-//                ->orWhere('id', '=', 1)
-//                ->orderBy('id')
-//                ->orderBy('typeId', 'ASC')
-//                ->limit(10);
-//        debug($sql);
-        if (null !== $this->data[static::$primaryKey]) {
-            $id = $this->data[static::$primaryKey];
-        } else {
-            //$sql = sprintf('INSERT INTO %s ');
-            //static::$adapter->query($sql);
+        //debug($this->sqlBuilder->update(array('id'=>1, 'title'=>'s'), "id = '1'"));
+        foreach ($this->data as $field => $value) {
+            $this->_validate($field, $value);
         }
+
+        if (isset($this->data[static::$primaryKey])) {
+            $where = static::$primaryKey . '=' . "'" . $this->data[static::$primaryKey] . "'";
+            $sql = $this->sqlBuilder->update($this->data, $where);
+            static::$adapter->query($sql);
+        } else {
+            $sql = $this->sqlBuilder->insert($this->data);
+            static::$adapter->query($sql);
+            $this->data[static::$primaryKey] = static::$adapter->insertId();
+        }
+        return $this->data[static::$primaryKey];
     }
 
     /**
@@ -233,8 +239,29 @@ abstract class Model
         }
     } 
     
+    /**
+     * 获取执行结果
+     * 
+     * @return array 
+     */
     public function fetch()
     {
-        
+        $sql = (string)$this->sqlBuilder;
+        $rs = static::$adapter->query($sql);
+        return static::$adapter->fetch($rs);
+    }
+    
+    /**
+     * 魔法调用
+     * 
+     * @param string $funcname 函数名称
+     * @param array $args 函数参数
+     * 
+     * @return mixed
+     */
+    public function __call($funcname, $args = array())
+    {
+        call_user_func_array(array($this->sqlBuilder, $funcname), $args);
+        return $this;
     }
 }
