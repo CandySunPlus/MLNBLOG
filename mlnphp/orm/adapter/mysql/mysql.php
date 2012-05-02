@@ -43,7 +43,7 @@ class Mysql extends AdapterBase
      */
     protected function selectDb()
     {
-        if (!mysql_select_db($this->conf['dbname'])) {
+        if (!mysql_select_db($this->conf['dbname'], $this->connect)) {
             throw new Exception(sprintf('无法选取数据库 %s', $this->conf['dbname']));
         }
         $this->db = $this->conf['dbname'];
@@ -76,7 +76,7 @@ class Mysql extends AdapterBase
      */
     public function query($sql)
     {
-        $result = mysql_query($sql);
+        $result = mysql_query($sql, $this->connect);
         if (false === $result) {
             throw new Exception(sprintf('SQL: %s 执行错误', $sql));
         }
@@ -109,5 +109,15 @@ class Mysql extends AdapterBase
     public function backupDb()
     {
         //TODO..
+    }
+    
+    /**
+     * 获取最近插入一条的ID
+     * 
+     * @return int 
+     */
+    public function insertId()
+    {
+        return mysql_insert_id($this->connect);
     }
 }
