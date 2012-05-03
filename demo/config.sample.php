@@ -48,7 +48,8 @@ return array(
     		'host' => '127.0.0.1:3306',
     		'username' => 'root',
     		'password' => 'root',
-    		'dbname' => 'demo'
+    		'dbname' => 'demo',
+            'prefix' => ''
     	)
     )
 );
