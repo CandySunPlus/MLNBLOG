@@ -21,7 +21,6 @@ abstract class Model
     protected static $dataType;
     protected $data;
     protected $sqlBuilder;
-    public $loaded;
 
     const MYSQL = '\\MLNPHP\\ORM\\Adapter\\Mysql\\Mysql';
 
@@ -59,7 +58,6 @@ abstract class Model
         static::$table = static::$adapter->tables[$tableName];
         static::$primaryKey = static::$table->primaryKey;
         $this->sqlBuilder = new SQLBuilder(static::$table);
-        $this->loaded = false;
     }
 
     /**
@@ -82,21 +80,6 @@ abstract class Model
     public static function create()
     {
         return new static();
-    }
-
-    /**
-     * 加载实体
-     * 
-     * @return Entity
-     */
-    public function load()
-    {
-        if (false == $this->loaded) {
-            $id = $this->data[static::$primaryKey];
-            $data = current($this->select('*')->where(static::$primaryKey, '=', $id)->fetch());
-            $this->_fillData($data);
-        }
-        return $this;
     }
 
     /**
@@ -128,11 +111,6 @@ abstract class Model
                 $this->data[$fieldName] = $data[$fieldName];
             }
         }
-
-        if (null !== $data) {
-            $this->loaded = true;
-        }
-        
     }
 
     /**
