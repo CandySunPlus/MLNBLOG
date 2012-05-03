@@ -57,7 +57,25 @@ abstract class AdapterBase
         $this->conf = $application->conf->db[$dbConfigName];
         $this->connect = $this->conn();
         $this->selectDb();
-        $this->tables = $this->getTables();
+        $this->tables = $this->_withoutPrefix($this->getTables());
+        
+    }
+
+    /**
+     * 去除数据库表前缀并返回
+     * 
+     * @param array $tables 数据库
+     * 
+     * @return array
+     */
+    private function _withoutPrefix($tables)
+    {
+        $return = array();
+        foreach ($tables as $tableName => $table) {
+            $nameNoPrefix = str_replace($this->conf['prefix'], '', $tableName);
+            $return[$nameNoPrefix] = $table;
+        }
+        return $return;
     }
 
     /**

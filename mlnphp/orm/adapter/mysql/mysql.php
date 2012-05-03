@@ -61,8 +61,7 @@ class Mysql extends AdapterBase
 
         $return = array();
         foreach ($tables as $tableName) {
-            $nameNoPrefix = str_replace($this->conf['prefix'], '', $tableName['Tables_in_demo']);
-            $return[$nameNoPrefix] = new MysqlTable($this, $tableName['Tables_in_demo']);
+            $return[$tableName['Tables_in_demo']] = new MysqlTable($this, $tableName['Tables_in_demo']);
         }
 
         return $return;
