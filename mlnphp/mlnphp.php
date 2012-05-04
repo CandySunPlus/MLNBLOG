@@ -56,10 +56,6 @@ class MLNPHP
      */
     public static function autoload($name)
     {
-        if (isset(self::$_requireClasses[$name])) {
-            return self::$_requireClasses[$name];
-        }
-
         $clsInfo = explode('\\', $name);
         $clsFlags = array_shift($clsInfo);
         $clsFileName = strtolower(array_pop($clsInfo)) . '.php';
