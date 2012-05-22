@@ -23,6 +23,9 @@ abstract class Model
     protected $sqlBuilder;
 
     const MYSQL = '\\MLNPHP\\ORM\\Adapter\\Mysql\\Mysql';
+    const BELONG_TO = 'BELONG_TO';
+    const HAS_ONE = 'HAS_ONE';
+    const HAS_MANY = 'HAS_MANY';
 
     private function __construct($id = null)
     {
