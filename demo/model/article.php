@@ -6,6 +6,7 @@ use \MLNPHP\ORM\Model;
 class Article extends Model
 {
     public static $dbType = Model::MYSQL;
+    
     public static $relation = array(
         BELONG_TO => array(
             

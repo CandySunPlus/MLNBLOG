@@ -49,7 +49,7 @@ return array(
     		'username' => 'root',
     		'password' => 'root',
     		'dbname' => 'demo',
-            'prefix' => '_'
+            'prefix' => 'pre_'
     	)
     )
 );

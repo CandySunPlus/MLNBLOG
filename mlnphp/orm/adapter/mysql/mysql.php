@@ -60,8 +60,9 @@ class Mysql extends AdapterBase
         $tables = $this->fetch($rs);
 
         $return = array();
+        $tableKeyStr = 'Tables_in_' . $this->db;
         foreach ($tables as $tableName) {
-            $return[$tableName['Tables_in_demo']] = new MysqlTable($this, $tableName['Tables_in_demo']);
+            $return[$tableName[$tableKeyStr]] = new MysqlTable($this, $tableName[$tableKeyStr]);
         }
 
         return $return;
