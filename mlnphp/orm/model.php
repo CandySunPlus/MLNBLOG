@@ -30,7 +30,8 @@ abstract class Model
 
     private function __construct($id = null)
     {
-        $this->_init();
+
+        $this->sqlBuilder = new SQLBuilder(static::$table);
         $this->data = array();
         if (null == $id) {       
             $this->_fillData();
@@ -52,16 +53,18 @@ abstract class Model
      * 
      * @return void
      */
-    private function _init()
+    public static function init()
     {
-        $dbConfigName = MLNPHP::getApplication()->conf->db['use'];
+        $dbConfigName = MLNPHP::getApplication()->conf->db->use;
         $model = explode('\\', get_called_class());
         $tableName = strtolower(array_pop($model));
         static::$adapter = call_user_func(static::$dbType . '::getInstance', $dbConfigName);        
         static::$dataType = call_user_func(static::$dbType . '::getDataType');
         static::$table = static::$adapter->tables[$tableName];
+        if (null === static::$table) {
+            throw new Exception(sprintf('数据表 %s 不存在', $tableName));
+        }
         static::$primaryKey = static::$table->primaryKey;
-        $this->sqlBuilder = new SQLBuilder(static::$table);
     }
 
     /**

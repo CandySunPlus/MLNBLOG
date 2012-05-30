@@ -1,5 +1,7 @@
 <?php
 namespace MLNPHP\Helper;
+
+use \MLNPHP\System\View;
 /**
  * Http response 类
  *
@@ -45,6 +47,17 @@ class Response {
         self::setContentType($contentType);
         
         echo $arg;
+    }
+
+    /**
+     * 404 NOT FOUND
+     * 
+     * @return void
+     */
+    public static function notFound()
+    {
+        $view = new View();
+        self::output($view->render('404', View::SYS));
     }
     
     /**

@@ -37,11 +37,7 @@ class Dispatch
 		$controllerCls = $realCAP['controllerCls'];
 		$action = $realCAP['action'];
 
-		if (class_exists($controllerCls) && method_exists($controllerCls, $action)) {
-			$this->runCAP($controllerCls, $action, $this->_params);
-		} else {
-			throw new Exception('Action not exists', 404);
-		}
+		$this->runCAP($controllerCls, $action, $this->_params);
 	}
 
 	/**
@@ -53,7 +49,7 @@ class Dispatch
 	 * @return array
 	 */
 	public function getRealCAP($controller, $action) {
-		$controllerCls = $this->_app->conf->path['controller'] . '\\' . ucfirst($controller);
+		$controllerCls = $this->_app->conf->path->controller . '\\' . ucfirst($controller);
 		$action = $action . 'Action';
 		return array(
 			'controllerCls' => $controllerCls,
@@ -73,19 +69,12 @@ class Dispatch
 	public function runCAP($controllerCls, $action, $params)
 	{	
 		try {
-			$controllerInstance =  new $controllerCls($params);
-			$controllerInstance->run($action);
+			class_exists($controllerCls) && method_exists($controllerCls, $action);
 		} catch (Exception $e) {
-			switch ($e->getCode()) {
-				case 404:
-					header('HTTP/1.0 404 Not Found');
-					break;				
-				default:
-					throw $e;
-					break;
-			}
-			
+			throw new Exception('File not found', 404);
 		}
-		
+
+		$controllerInstance =  new $controllerCls($params);
+		$controllerInstance->run($action);
 	}
 }

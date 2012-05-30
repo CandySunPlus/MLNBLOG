@@ -31,7 +31,7 @@ abstract class AdapterBase
     {
         static $instance = array();
         
-        $adapterType = ucfirst(MLNPHP::getApplication()->conf->db[$dbConfigName]['type']);
+        $adapterType = ucfirst(MLNPHP::getApplication()->conf->db->$dbConfigName->type);
         $adapterClass = "\\MLNPHP\\ORM\\Adapter\\$adapterType\\$adapterType";
 
         if (!isset($instance[$dbConfigName])) {
@@ -72,7 +72,7 @@ abstract class AdapterBase
     {
         $return = array();
         foreach ($tables as $tableName => $table) {
-            $nameNoPrefix = str_replace($this->conf['prefix'], '', $tableName);
+            $nameNoPrefix = str_replace($this->conf->prefix, '', $tableName);
             $return[$nameNoPrefix] = $table;
         }
         return $return;

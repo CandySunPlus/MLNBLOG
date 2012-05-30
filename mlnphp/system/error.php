@@ -77,6 +77,7 @@ class Error {
             ->assgin('line', $line);
         $page = $view->render('error', View::SYS);
         Response::output($page);
+        
         return true;
     }
 

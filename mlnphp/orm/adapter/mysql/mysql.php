@@ -24,9 +24,9 @@ class Mysql extends AdapterBase
      */
     protected function conn()
     {
-        $host = $this->conf['host'];
-        $username = $this->conf['username'];
-        $password = empty($this->conf['password']) ? '' : $this->conf['password'];
+        $host = $this->conf->host;
+        $username = $this->conf->username;
+        $password = empty($this->conf->password) ? '' : $this->conf->password;
 
         $conn = mysql_connect($host, $username, $password);
 
@@ -43,10 +43,10 @@ class Mysql extends AdapterBase
      */
     protected function selectDb()
     {
-        if (!mysql_select_db($this->conf['dbname'], $this->connect)) {
-            throw new Exception(sprintf('无法选取数据库 %s', $this->conf['dbname']));
+        if (!mysql_select_db($this->conf->dbname, $this->connect)) {
+            throw new Exception(sprintf('无法选取数据库 %s', $this->conf->dbname));
         }
-        $this->db = $this->conf['dbname'];
+        $this->db = $this->conf->dbname;
     }
 
     /**
@@ -58,7 +58,6 @@ class Mysql extends AdapterBase
     {
         $rs = $this->query(sprintf('SHOW TABLES FROM %s', $this->db));
         $tables = $this->fetch($rs);
-
         $return = array();
         $tableKeyStr = 'Tables_in_' . $this->db;
         foreach ($tables as $tableName) {

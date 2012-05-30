@@ -11,7 +11,7 @@ return array(
 		'template' => 'APP\\View'
 	),
 	'page' => array(
-		'404' => array(
+		'p404' => array(
 			'controller' => 'error', 
 			'action' => 'notfound', 
 			'params' => array()

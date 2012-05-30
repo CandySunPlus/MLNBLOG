@@ -27,13 +27,13 @@ class Article extends ControllerBase
 		$articleEntity = $articleModel::create();
 		$articleEntity->title = 'hello';
         $articleEntity->content = 'this is a new art';
-        $articleEntity->typeId = 1;
+        $articleEntity->categoryId = 1;
 		$articleEntity->save();
         debug($articleEntity->id);
         $articleEntity->title = 'world';
         $articleEntity->save();
 		//$mysql->getLastQuery();
 		//debug($mysql->getTables());
-		$this->output($this->request->get('id'));
+		//$this->output($this->request->get('id'));
 	}
 }

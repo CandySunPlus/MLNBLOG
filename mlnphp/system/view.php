@@ -104,7 +104,6 @@ class View {
     {
         $templatePath = $this->_getTemplatePath($template, $type);        
         extract($this->_vars);
-        ob_get_clean();
         ob_start();
         require $templatePath;
         return ob_get_clean();
