@@ -283,13 +283,27 @@ abstract class Model
     /**
      * 删除相关实体
      * 
+     * @param bool $delRelation 是否同时删除对多的关系数据
+     * 
      * @return void
      */
-    public function delete()
+    public function delete($delRelation = false)
     {
         if (null !== $this->data[static::$primaryKey]) {
             $id = $this->data[static::$primaryKey];
         }
+        $where = static::$primaryKey . '=' . "'" . $this->data[static::$primaryKey] . "'";
+        $sql = $this->sqlBuilder->delete($where);
+
+        if ($delRelation) {
+            foreach (static::$relation[Model::HAS] as $relation => $model) {
+                $tmps = $this->$relation;
+                foreach ($tmps as $tmp) {
+                    $tmp->delete(true);
+                }
+            }
+        }
+        static::$adapter->query($sql);
     } 
     
     /**

@@ -39,18 +39,20 @@ class Article extends ControllerBase
         // $this->output($this->request->get('id'));
         // $categoryModel = model('Category');
         // $categoryEntity = $categoryModel::get(2);
+        // $categoryEntity->delete(true);
         // $this->output($categoryEntity->name);
         // $categoryEntity->name = '分类二';
         // $categoryEntity->save();
-        $articleModel = model('Article');
-        $articleEntity = $articleModel::get(1);
-        $this->output($articleEntity->category->name);
-        $this->output($articleEntity->title);
-        $categoryEntity = $articleEntity->category;
+        // $articleModel = model('Article');
+        // $articleEntity = $articleModel::get(4);
+        // $articleEntity->delete();
+        // $this->output($articleEntity->category->name);
+        // $this->output($articleEntity->title);
+        // $categoryEntity = $articleEntity->category;
         
-        foreach ($categoryEntity->articles as $article) {
-            $this->output($article->id);
-        }
+        // foreach ($categoryEntity->articles as $article) {
+        //     $this->output($article->id);
+        // }
 
     }
 }
