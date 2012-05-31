@@ -75,7 +75,7 @@ class View {
     private function _getTemplatePath($template, $type)
     {
         if ($type == View::APP) {
-            $templateDir = $this->_app->conf->path['template'];
+            $templateDir = $this->_app->conf->path->template;
         } else {
             $templateDir = View::SYS_VIEW_PATH;
         }
