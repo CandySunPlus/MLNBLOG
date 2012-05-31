@@ -54,9 +54,10 @@ abstract class AdapterBase
     private function __construct($dbConfigName)
     {
         $application = MLNPHP::getApplication();
-        $this->conf = $application->conf->db[$dbConfigName];
+        $this->conf = $application->conf->db->$dbConfigName;
         $this->connect = $this->conn();
         $this->selectDb();
+        $this->setCharset();
         $this->tables = $this->_withoutPrefix($this->getTables());
         
     }
@@ -84,6 +85,13 @@ abstract class AdapterBase
      * @return resource
      */
     abstract protected function conn();
+
+    /**
+     * 设置数据库字符集
+     * 
+     * @return void
+     */
+    abstract protected function setCharset();
 
     /**
      * 选取数据库

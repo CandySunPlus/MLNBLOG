@@ -37,6 +37,16 @@ class Mysql extends AdapterBase
     }
 
     /**
+     * 设置数据库字符集
+     * 
+     * @return void
+     */
+    protected function setCharset()
+    {
+        $this->query(sprintf("set names '%s'", $this->conf->charset));
+    }
+
+    /**
      * 选取数据库
      * 
      * @return void

@@ -49,7 +49,8 @@ return array(
     		'username' => 'root',
     		'password' => 'root',
     		'dbname' => 'demo',
-            'prefix' => 'pre_'
+            'prefix' => 'pre_',
+            'charset' => 'utf8'
     	)
     )
 );

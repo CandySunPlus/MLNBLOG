@@ -4,6 +4,7 @@ namespace MLNPHP\ORM;
 use \MLNPHP\MLNPHP;
 use \MLNPHP\ORM\SQLBuilder;
 use \MLNPHP\ORM\Adapter\Mysql\Mysql;
+use \MLNPHP\Helper\ArrayMap;
 use \Exception;
 
 /**
@@ -13,24 +14,27 @@ use \Exception;
  */
 abstract class Model
 {
-    public static $dbType;
     public static $primaryKey;
     public static $fields;
+    public static $inited = array();
+    protected static $dbType;
     protected static $table;
     protected static $adapter;
     protected static $dataType;
+    protected static $relation;
+    protected static $foreignKey;
     protected $data;
     protected $sqlBuilder;
+    protected $loaded;
 
     const MYSQL = '\\MLNPHP\\ORM\\Adapter\\Mysql\\Mysql';
     
-    const BELONG_TO = 'BELONG_TO';
-    const HAS_ONE = 'HAS_ONE';
-    const HAS_MANY = 'HAS_MANY';
+    const BELONGS_TO = 'BELONGS_TO';
+    const HAS = 'HAS';
 
     private function __construct($id = null)
     {
-
+        $this->loaded = false;
         $this->sqlBuilder = new SQLBuilder(static::$table);
         $this->data = array();
         if (null == $id) {       
@@ -38,11 +42,7 @@ abstract class Model
             unset($this->data[static::$primaryKey]);
         } elseif (is_numeric($id)) {
             $this->data[static::$primaryKey] = $id;
-            $data = current($this->select('*')->where(static::$primaryKey, '=', $id)->fetch());
-            if (false === $data) {
-                throw new Exception("无法获取指定主键实体");
-            }
-            $this->_fillData($data);
+            $this->loadData();
         } else {
             throw new Exception("无法获取指定主键实体");            
         }        
@@ -52,6 +52,7 @@ abstract class Model
      * 初始化模型
      * 
      * @return void
+     * @todo 信息缓存
      */
     public static function init()
     {
@@ -202,11 +203,57 @@ abstract class Model
      */
     public function __get($field)
     {
-        if (!isset($this->data[$field])) {
-            throw new Exception(sprintf("您所指定的字段 %s 不存在", $field));
+        $this->loadData();
+
+        if (isset($this->data[$field])) {
+            return $this->data[$field];
         }
 
-        return $this->data[$field];
+        if (isset(static::$relation[Model::BELONGS_TO][$field])) {            
+            $model = static::$relation[Model::BELONGS_TO][$field];
+            $model::init();
+            $foreignKey = $model::$foreignKey;
+            return call_user_func($model . '::get', $this->$foreignKey);
+        }
+
+        if (isset(static::$relation[Model::HAS][$field])) {
+            $model = static::$relation[Model::HAS][$field];
+            $model::init();            
+            $pk = static::$primaryKey;
+            $modelEntity = $model::create();
+            $data = $modelEntity->select($model::$primaryKey)
+                ->where(static::$foreignKey, '=', $this->$pk)
+                ->fetch();
+            $return = array();
+            foreach ($data as $value) {
+                $entity = $model::create();
+                $modelPK = $model::$primaryKey;
+                $entity->$modelPK = $value[$modelPK];
+                $return[] = $entity;
+            }
+            return new ArrayMap($return);
+        }
+
+        throw new Exception(sprintf("您所指定的字段 %s 不存在", $field));        
+    }
+
+    /**
+     * 加载实体
+     * 
+     * @return void
+     */
+    public function loadData()
+    {
+        $pk = static::$primaryKey;
+        if (!empty($this->data[$pk]) && !$this->loaded) {
+            $data = current($this->select('*')->where(static::$primaryKey, '=', $this->data[$pk])->fetch());
+            if (false === $data) {
+                throw new Exception("无法获取指定主键实体");
+            } else {
+                $this->_fillData($data);
+                $this->loaded = true;
+            }
+        }
     }
 
     /**

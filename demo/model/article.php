@@ -5,16 +5,14 @@ use \MLNPHP\ORM\Model;
 
 class Article extends Model
 {
-    public static $dbType = Model::MYSQL;
+    protected static $dbType = Model::MYSQL;
+    protected static $foreignKey = 'articleId';
     
-    public static $relation = array(
-        BELONG_TO => array(
-            
+    protected static $relation = array(
+        Model::BELONGS_TO => array(
+            'category' => "APP\\Model\\Category"
         ),
-        HAS_ONE => array(
-            
-        ),
-        HAS_MANY => array(
+        Model::HAS => array(
             
         )
     );

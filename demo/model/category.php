@@ -1,21 +1,19 @@
 <?php
 namespace APP\Model;
 
-use \MLNPHP\ORM\Model；
+use \MLNPHP\ORM\Model;
 
 class Category extends Model
 {
-    public static $dbType = Model::MYSQL;
+    protected static $dbType = Model::MYSQL;
+    protected static $foreignKey = 'categoryId';
 
     public static $relation = array(
-        BELONG_TO => array(
+        Model::BELONGS_TO => array(
             
         ),
-        HAS_ONE => array(
-            
-        ),
-        HAS_MANY => array(
-            
+        Model::HAS => array(
+            'articles' => "APP\\Model\\Article"
         )
     );
 }
