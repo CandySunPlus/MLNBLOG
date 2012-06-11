@@ -30,7 +30,7 @@ class View {
      * 
      * @return View
      */
-    public function assgin($key, $value)
+    public function assign($key, $value)
     {
         $this->_vars[$key] = $value;
         return $this;

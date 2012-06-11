@@ -48,7 +48,7 @@ class Error {
     public static function exception($e)
     {
         $view = new View();
-        $view->assgin('exception', $e);
+        $view->assign('exception', $e);
         $page = $view->render('exception', View::SYS);
         Response::output($page);
         exit;
@@ -71,10 +71,10 @@ class Error {
             return true;
         }
         $view = new View();
-        $view->assgin('code', $code)
-            ->assgin('error', $error)
-            ->assgin('file', $file)
-            ->assgin('line', $line);
+        $view->assign('code', $code)
+            ->assign('error', $error)
+            ->assign('file', $file)
+            ->assign('line', $line);
         $page = $view->render('error', View::SYS);
         Response::output($page);
         
