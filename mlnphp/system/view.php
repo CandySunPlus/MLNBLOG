@@ -30,7 +30,7 @@ class View {
      * 
      * @return View
      */
-    public function assgin($key, $value)
+    public function assign($key, $value)
     {
         $this->_vars[$key] = $value;
         return $this;
@@ -75,7 +75,7 @@ class View {
     private function _getTemplatePath($template, $type)
     {
         if ($type == View::APP) {
-            $templateDir = $this->_app->conf->path['template'];
+            $templateDir = $this->_app->conf->path->template;
         } else {
             $templateDir = View::SYS_VIEW_PATH;
         }
@@ -104,7 +104,6 @@ class View {
     {
         $templatePath = $this->_getTemplatePath($template, $type);        
         extract($this->_vars);
-        ob_get_clean();
         ob_start();
         require $templatePath;
         return ob_get_clean();

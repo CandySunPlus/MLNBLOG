@@ -2,6 +2,7 @@
 namespace MLNPHP\System;
 
 use \MLNPHP\System\Dispatch;
+use \MLNPHP\Helper\Response;
 use \Exception;
 
 /**
@@ -15,6 +16,7 @@ class HttpApplication
 	public $controllerPath;
 	public $modelPath;
 	public $templatePath;
+	public $dispatch;
 
 	const defaultController = 'index';
 	const defaultAction = 'show';
@@ -31,7 +33,8 @@ class HttpApplication
 		$this->conf = $config;
 		$this->controllerPath = $this->_getControllerPath();
 		$this->modelPath = $this->_getControllerPath();
-		$this->templatePath = $this->_getTemplatePath();
+		$this->templatePath = $this->_getTemplatePath();		
+		
         date_default_timezone_set($this->conf->timezone);
         if (!$this->conf->debug) {
         	error_reporting(~E_ALL);
@@ -45,9 +48,9 @@ class HttpApplication
 	 */
 	private function _getControllerPath()
 	{
-		$controllerPath = empty($this->conf->path['controller']) ? 
+		$controllerPath = empty($this->conf->path->controller) ? 
 			null :
-			$this->conf->path['controller'];	
+			$this->conf->path->controller;	
 		if (null == $controllerPath) {
 			throw new Exception('控制器目录未配置！');
 		}
@@ -61,9 +64,9 @@ class HttpApplication
 	 */
 	private function _getModelPath()
 	{
-		$modelPath = empty($this->conf->path['model']) ? 
+		$modelPath = empty($this->conf->path->model) ? 
 			null :
-			$this->conf->path['model'];
+			$this->conf->path->model;
 		if (null == $modelPath) {
 			throw new Exception('模型目录未配置！');
 		}
@@ -77,9 +80,9 @@ class HttpApplication
 	 */
 	private function _getTemplatePath()
 	{
-		$templatePath = empty($this->conf->path['template']) ? 
+		$templatePath = empty($this->conf->path->template) ? 
 			null :
-			$this->conf->path['template'];
+			$this->conf->path->template;
 		if (null == $templatePath) {
 			throw new Exception('视图目录未配置！');
 		}
@@ -93,26 +96,48 @@ class HttpApplication
 	 */
 	public function run()
 	{
-		$dispatch = new Dispatch($this->conf->router);
-		
+		$this->dispatch = new Dispatch($this->conf->router);
 		try {			
-			$dispatch->run();	
+			$this->dispatch->run();	
 		} catch (Exception $e) {
 			if ($e->getCode() == 404) {
-				$controller = $this->conf->page['404']['controller'];
-				$action = $this->conf->page['404']['action'];
-				$params = $this->conf->page['404']['params'];
-
-				$realCAP = $dispatch->getRealCAP($controller, $action);
-				$controllerCls = $realCAP['controllerCls'];
-				$action = $realCAP['action'];
-	            
-	            header('HTTP/1.0 404 File Not Found');
-				$dispatch->runCAP($controllerCls, $action, $params);
+				$this->notFound();
 			} else {
 				throw $e;
 				
 			}
 		}
+	}
+
+	/**
+	 * 404 NOT FOUND
+	 * 
+	 * @return void
+	 */
+	public function notFound()
+	{
+		try {
+			$this->runCustom404();
+        } catch (Exception $e) {
+        	Response::notFound();
+        }
+	}
+
+	/**
+	 * Custom 404 NOT FOUND
+	 * 
+	 * @return void
+	 */
+	public function runCustom404()
+	{
+		$controller = $this->conf->page->p404->controller;
+		$action = $this->conf->page->p404->action;
+		$params = $this->conf->page->p404->params;
+
+		$realCAP = $this->dispatch->getRealCAP($controller, $action);
+		$controllerCls = $realCAP['controllerCls'];
+		$action = $realCAP['action'];
+		header('HTTP/1.0 404 File Not Found');
+		$this->dispatch->runCAP($controllerCls, $action, $params);
 	}
 }

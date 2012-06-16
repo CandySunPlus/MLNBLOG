@@ -256,6 +256,22 @@ class SQLBuilder
             $condition
         );
     }
+
+    /**
+     * 删除
+     * 
+     * @param string $condition 条件 
+     * 
+     * @return string
+     */
+    public function delete($condition)
+    {
+        return sprintf(
+            'DELETE FROM %s WHERE %s',
+            $this->table->tableName,
+            $condition
+        );
+    }
     
     
     /**

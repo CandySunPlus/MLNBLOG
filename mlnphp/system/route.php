@@ -172,6 +172,7 @@ class Route
 		$replace = array('$this->_routerMatch["\\1"]');	
 		foreach ($this->_routers as $router => $CAP) {
 			if (false !== $this->_compare($router, $this->_pathInfo)) {	
+				$CAP = $CAP->toArray();
 				$params = array_pop($CAP);
 				//替换控制器和动作				
 				$CA = preg_replace($replaceStr, $replace, $CAP);

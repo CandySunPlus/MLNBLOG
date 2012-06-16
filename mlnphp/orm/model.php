@@ -4,6 +4,7 @@ namespace MLNPHP\ORM;
 use \MLNPHP\MLNPHP;
 use \MLNPHP\ORM\SQLBuilder;
 use \MLNPHP\ORM\Adapter\Mysql\Mysql;
+use \MLNPHP\Helper\ArrayMap;
 use \Exception;
 
 /**
@@ -13,31 +14,35 @@ use \Exception;
  */
 abstract class Model
 {
-    public static $dbType;
     public static $primaryKey;
     public static $fields;
+    public static $inited = array();
+    protected static $dbType;
     protected static $table;
     protected static $adapter;
     protected static $dataType;
+    protected static $relation;
+    protected static $foreignKey;
     protected $data;
     protected $sqlBuilder;
+    protected $loaded;
 
     const MYSQL = '\\MLNPHP\\ORM\\Adapter\\Mysql\\Mysql';
+    
+    const BELONGS_TO = 'BELONGS_TO';
+    const HAS = 'HAS';
 
     private function __construct($id = null)
     {
-        $this->_init();
+        $this->loaded = false;
+        $this->sqlBuilder = new SQLBuilder(static::$table);
         $this->data = array();
         if (null == $id) {       
             $this->_fillData();
             unset($this->data[static::$primaryKey]);
         } elseif (is_numeric($id)) {
             $this->data[static::$primaryKey] = $id;
-            $data = current($this->select('*')->where(static::$primaryKey, '=', $id)->fetch());
-            if (false === $data) {
-                throw new Exception("无法获取指定主键实体");
-            }
-            $this->_fillData($data);
+            $this->loadData();
         } else {
             throw new Exception("无法获取指定主键实体");            
         }        
@@ -47,17 +52,20 @@ abstract class Model
      * 初始化模型
      * 
      * @return void
+     * @todo 信息缓存
      */
-    private function _init()
+    public static function init()
     {
-        $dbConfigName = MLNPHP::getApplication()->conf->db['use'];
+        $dbConfigName = MLNPHP::getApplication()->conf->db->use;
         $model = explode('\\', get_called_class());
         $tableName = strtolower(array_pop($model));
         static::$adapter = call_user_func(static::$dbType . '::getInstance', $dbConfigName);        
         static::$dataType = call_user_func(static::$dbType . '::getDataType');
         static::$table = static::$adapter->tables[$tableName];
+        if (null === static::$table) {
+            throw new Exception(sprintf('数据表 %s 不存在', $tableName));
+        }
         static::$primaryKey = static::$table->primaryKey;
-        $this->sqlBuilder = new SQLBuilder(static::$table);
     }
 
     /**
@@ -195,11 +203,57 @@ abstract class Model
      */
     public function __get($field)
     {
-        if (!isset($this->data[$field])) {
-            throw new Exception(sprintf("您所指定的字段 %s 不存在", $field));
+        $this->loadData();
+
+        if (isset($this->data[$field])) {
+            return $this->data[$field];
         }
 
-        return $this->data[$field];
+        if (isset(static::$relation[Model::BELONGS_TO][$field])) {            
+            $model = static::$relation[Model::BELONGS_TO][$field];
+            $model::init();
+            $foreignKey = $model::$foreignKey;
+            return call_user_func($model . '::get', $this->$foreignKey);
+        }
+
+        if (isset(static::$relation[Model::HAS][$field])) {
+            $model = static::$relation[Model::HAS][$field];
+            $model::init();            
+            $pk = static::$primaryKey;
+            $modelEntity = $model::create();
+            $data = $modelEntity->select($model::$primaryKey)
+                ->where(static::$foreignKey, '=', $this->$pk)
+                ->fetch();
+            $return = array();
+            foreach ($data as $value) {
+                $entity = $model::create();
+                $modelPK = $model::$primaryKey;
+                $entity->$modelPK = $value[$modelPK];
+                $return[] = $entity;
+            }
+            return new ArrayMap($return);
+        }
+
+        throw new Exception(sprintf("您所指定的字段 %s 不存在", $field));        
+    }
+
+    /**
+     * 加载实体
+     * 
+     * @return void
+     */
+    public function loadData()
+    {
+        $pk = static::$primaryKey;
+        if (!empty($this->data[$pk]) && !$this->loaded) {
+            $data = current($this->select('*')->where(static::$primaryKey, '=', $this->data[$pk])->fetch());
+            if (false === $data) {
+                throw new Exception("无法获取指定主键实体");
+            } else {
+                $this->_fillData($data);
+                $this->loaded = true;
+            }
+        }
     }
 
     /**
@@ -229,13 +283,27 @@ abstract class Model
     /**
      * 删除相关实体
      * 
+     * @param bool $delRelation 是否同时删除对多的关系数据
+     * 
      * @return void
      */
-    public function delete()
+    public function delete($delRelation = false)
     {
         if (null !== $this->data[static::$primaryKey]) {
             $id = $this->data[static::$primaryKey];
         }
+        $where = static::$primaryKey . '=' . "'" . $this->data[static::$primaryKey] . "'";
+        $sql = $this->sqlBuilder->delete($where);
+
+        if ($delRelation) {
+            foreach (static::$relation[Model::HAS] as $relation => $model) {
+                $tmps = $this->$relation;
+                foreach ($tmps as $tmp) {
+                    $tmp->delete(true);
+                }
+            }
+        }
+        static::$adapter->query($sql);
     } 
     
     /**

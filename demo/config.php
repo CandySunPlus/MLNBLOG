@@ -11,7 +11,7 @@ return array(
 		'template' => 'APP\\View'
 	),
 	'page' => array(
-		'404' => array(
+		'p404' => array(
 			'controller' => 'error', 
 			'action' => 'notfound', 
 			'params' => array()
@@ -49,7 +49,8 @@ return array(
     		'username' => 'root',
     		'password' => 'root',
     		'dbname' => 'demo',
-            'prefix' => '_'
+            'prefix' => 'pre_',
+            'charset' => 'utf8'
     	)
     )
 );

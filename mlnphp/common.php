@@ -55,5 +55,6 @@ function dump()
 function model($modelName)
 {
     $conf = MLNPHP::getApplication()->conf;
-    return $conf->path['model'] . '\\' . $modelName;
+    call_user_func($conf->path->model . '\\' . $modelName . '::init');
+    return $conf->path->model . '\\' . $modelName;
 }

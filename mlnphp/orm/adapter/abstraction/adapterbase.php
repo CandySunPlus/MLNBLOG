@@ -31,7 +31,7 @@ abstract class AdapterBase
     {
         static $instance = array();
         
-        $adapterType = ucfirst(MLNPHP::getApplication()->conf->db[$dbConfigName]['type']);
+        $adapterType = ucfirst(MLNPHP::getApplication()->conf->db->$dbConfigName->type);
         $adapterClass = "\\MLNPHP\\ORM\\Adapter\\$adapterType\\$adapterType";
 
         if (!isset($instance[$dbConfigName])) {
@@ -54,9 +54,10 @@ abstract class AdapterBase
     private function __construct($dbConfigName)
     {
         $application = MLNPHP::getApplication();
-        $this->conf = $application->conf->db[$dbConfigName];
+        $this->conf = $application->conf->db->$dbConfigName;
         $this->connect = $this->conn();
         $this->selectDb();
+        $this->setCharset();
         $this->tables = $this->_withoutPrefix($this->getTables());
         
     }
@@ -72,7 +73,7 @@ abstract class AdapterBase
     {
         $return = array();
         foreach ($tables as $tableName => $table) {
-            $nameNoPrefix = str_replace($this->conf['prefix'], '', $tableName);
+            $nameNoPrefix = str_replace($this->conf->prefix, '', $tableName);
             $return[$nameNoPrefix] = $table;
         }
         return $return;
@@ -84,6 +85,13 @@ abstract class AdapterBase
      * @return resource
      */
     abstract protected function conn();
+
+    /**
+     * 设置数据库字符集
+     * 
+     * @return void
+     */
+    abstract protected function setCharset();
 
     /**
      * 选取数据库

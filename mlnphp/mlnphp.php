@@ -24,7 +24,6 @@ class MLNPHP
      */
     public static function initialize()
     {    
-        ob_start();    
         self::$_requireClasses = array();
         spl_autoload_register('self::autoload');
         
