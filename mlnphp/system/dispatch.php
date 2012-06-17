@@ -12,70 +12,72 @@ use \Exception;
  */
 class Dispatch
 {
-	private $_route;
-	private $_controller;
-	private $_action;
-	private $_params;
-	private $_app;
+    private $_route;
+    private $_controller;
+    private $_action;
+    private $_params;
+    private $_app;
 
-	public function __construct($router = array())
-	{
-		$this->_route = new Route($router, getenv('PATH_INFO'));
-		$this->_app = MLNPHP::getApplication();
-	}
+    public function __construct($router = array())
+    {
+        $this->_route = new Route($router, getenv('PATH_INFO'));
+        $this->_app = MLNPHP::getApplication();
+    }
 
-	/**
-	 * 执行分发
-	 * 
-	 * @return void
-	 */
-	public function run()
-	{
-		list($this->_controller, $this->_action, $this->_params) = array_values($this->_route->parse());
+    /**
+     * 执行分发
+     * 
+     * @return void
+     */
+    public function run()
+    {
+        list($this->_controller, $this->_action, $this->_params) = array_values($this->_route->parse());
 
-		$realCAP = $this->getRealCAP($this->_controller, $this->_action);
+        $realCAP = $this->getRealCAP($this->_controller, $this->_action);
 
-		$controllerCls = $realCAP['controllerCls'];
-		$action = $realCAP['action'];
+        $controllerCls = $realCAP['controllerCls'];
+        $action = $realCAP['action'];
 
-		$this->runCAP($controllerCls, $action, $this->_params);
-	}
+        $this->runCAP($controllerCls, $action, $this->_params);
+    }
 
-	/**
-	 * 获取完整命名空间的控制器类名和动作
-	 * 
-	 * @param string $controller 控制器
-	 * @param string $action 动作
-	 * 
-	 * @return array
-	 */
-	public function getRealCAP($controller, $action) {
-		$controllerCls = $this->_app->conf->path->controller . '\\' . ucfirst($controller);
-		$action = $action . 'Action';
-		return array(
-			'controllerCls' => $controllerCls,
-			'action' => $action
-		);
-	}
+    /**
+     * 获取完整命名空间的控制器类名和动作
+     * 
+     * @param string $controller 控制器
+     * @param string $action 动作
+     * 
+     * @return array
+     */
+    public function getRealCAP($controller, $action) {
+        $controllerCls = $this->_app->conf->path->controller . '\\' . ucfirst($controller);
+        $action = $action . 'Action';
+        return array(
+            'controllerCls' => $controllerCls,
+            'action' => $action
+        );
+    }
 
-	/**
-	 * 运行控制器的相关动作
-	 * 
-	 * @param Object $controllerCls 控制器类
-	 * @param string $action 动作
-	 * @param array $params 参数
-	 * 
-	 * @return void
-	 */
-	public function runCAP($controllerCls, $action, $params)
-	{	
-		try {
-			class_exists($controllerCls) && method_exists($controllerCls, $action);
-		} catch (Exception $e) {
-			throw new Exception('File not found', 404);
-		}
+    /**
+     * 运行控制器的相关动作
+     * 
+     * @param Object $controllerCls 控制器类
+     * @param string $action 动作
+     * @param array $params 参数
+     * 
+     * @return void
+     */
+    public function runCAP($controllerCls, $action, $params)
+    {   
+        try {
+            if (!method_exists($controllerCls, $action)) {
+                throw new Exception;
+            }
+        } catch (Exception $e) {
+            throw new Exception('File not found', 404);
+        }
 
-		$controllerInstance =  new $controllerCls($params);
-		$controllerInstance->run($action);
-	}
+        $controllerInstance =  new $controllerCls($params);
+        $controllerInstance->run($action);
+    }
 }
