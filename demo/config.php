@@ -10,36 +10,6 @@ return array(
 		'model' => 'APP\\Model',
 		'template' => 'APP\\View'
 	),
-	'page' => array(
-		'p404' => array(
-			'controller' => 'error', 
-			'action' => 'notfound', 
-			'params' => array()
-		)
-	),
-	'router' => array(
-		'about' => array(
-			'controller' => 'article', 
-			'action' => HttpApplication::defaultAction, 
-			'params' => array(
-				'id' => '1'
-			)
-		),
-		'page/art-show-{%d}.html' => array(
-			'controller' => 'article', 
-			'action' => HttpApplication::defaultAction, 
-			'params' => array(
-				'id' => '$1'
-			)	
-		),
-		'favicon.ico' => array(
-			'controller' => 'ico', 
-			'action' => HttpApplication::defaultAction, 
-			'params' => array(
-				'id' => '1'
-			)
-		)
-	),
     'timezone' => 'Asia/Shanghai',
     'db' => array(
         'use' => 'devel',
@@ -49,8 +19,7 @@ return array(
     		'username' => 'root',
     		'password' => 'root',
     		'dbname' => 'demo',
-            'prefix' => 'pre_',
-            'charset' => 'utf8'
+            'prefix' => ''
     	)
     )
 );

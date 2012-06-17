@@ -2,6 +2,7 @@
 namespace MLNPHP\Helper;
 
 use \ArrayObject;
+use \Exception;
 
 /**
  * 数组对象映射
@@ -30,7 +31,11 @@ class ArrayMap extends ArrayObject
      * @return mixed
      */
     public function __get($index){
-        return $this->offsetGet($index);
+        if ($this->offsetExists($index)) {
+            return $this->offsetGet($index);
+        } else {
+            throw new Exception('undefined index in arraymap');
+        }
     }
 
     /**

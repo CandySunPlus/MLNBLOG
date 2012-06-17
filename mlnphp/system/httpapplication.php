@@ -96,7 +96,12 @@ class HttpApplication
 	 */
 	public function run()
 	{
+		if (!isset($this->conf->router)) {
+			$this->conf->put('router', array());
+		}
+
 		$this->dispatch = new Dispatch($this->conf->router);
+		
 		try {			
 			$this->dispatch->run();	
 		} catch (Exception $e) {
