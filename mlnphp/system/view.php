@@ -63,6 +63,18 @@ class View {
         $viewContent = $view->render($template, $type);
         echo $viewContent;
     }
+
+    /**
+     * 输出变量
+     * 
+     * @param mixed $value 变量
+     * 
+     * @return void
+     */
+    public function put($value)
+    {
+        echo $value;
+    }
     
     /**
      * 获取模板文件路径
