@@ -48,13 +48,18 @@ function dump()
 /**
  * 返回模型
  * 
- * @param string $modelName 模型名称
+ * @param string $modelName 模型名称或完整命名空间
  * 
  * @return Model
  */
 function model($modelName)
 {
-    $conf = MLNPHP::getApplication()->conf;
-    call_user_func($conf->path->model . '\\' . $modelName . '::init');
-    return $conf->path->model . '\\' . $modelName;
+    if (class_exists($modelName)) {
+        $modelClass = $modelName;
+    } else {
+        $conf = MLNPHP::getApplication()->conf;
+        $modelClass = $conf->path->model . '\\' . $modelName;
+    }
+    call_user_func($modelClass . '::init');
+    return $modelClass;
 }

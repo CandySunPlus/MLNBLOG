@@ -1,7 +1,6 @@
 <?php
-
 define('DS', DIRECTORY_SEPARATOR);
-define('ROOT_PATH', realpath(__DIR__));
+define('ROOT_PATH', realpath(__DIR__ . DS . '..'));
 define('F_PATH', ROOT_PATH . DS . 'mlnphp');
 define('APP_PATH', ROOT_PATH . DS . 'mlncms');
 
