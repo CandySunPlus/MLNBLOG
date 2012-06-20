@@ -1,4 +1,5 @@
 <?php
+
 namespace MLNPHP\Helper;
 
 /**
@@ -57,6 +58,18 @@ abstract class User
             return false;
         }
         return true;
+    }
+
+    /**
+     * 用户是否有权限
+     * 
+     * @param string $controller 控制器
+     * @param string $action 动作
+     * 
+     * @return bool
+     */
+    public function hasPrivilege($controller, $action) {
+        return $this->passport->hasPrivilege($controller, $action);
     }
 
     /**
