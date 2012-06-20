@@ -7,6 +7,6 @@ class ManagerPassport extends Passport
 {
     protected function getUserModel()
     {
-        return model('Manager');
+        return model('Managers');
     } 
 }
