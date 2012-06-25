@@ -55,6 +55,7 @@ abstract class AdapterBase
         $this->connect = $this->conn();
         $this->selectDb();
         $this->setCharset();
+        //TODO: 表名前缀处理
         $this->tables = $this->_withoutPrefix($this->getTables());
         
     }

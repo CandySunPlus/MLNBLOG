@@ -15,7 +15,7 @@ return array(
         'use' => 'devel',
     	'devel' => array(
     		'type' => AdapterBase::MYSQL,
-            'host' => '127.0.0.1:3306',
+            'host' => '192.168.1.103:3306',
             'username' => 'root',
             'password' => 'root',
             'dbname' => 'mlncms',

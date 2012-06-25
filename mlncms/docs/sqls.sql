@@ -5,9 +5,9 @@ CREATE TABLE `masters` (
      `password` varchar(255) NOT NULL,
      `groupId` int(11) NOT NULL,
      PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8i;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-REATE TABLE `mastergroups` (
+CREATE TABLE `mastergroups` (
      `id` int(10) NOT NULL AUTO_INCREMENT,
      `name` varchar(255) NOT NULL,
      `hasprivilege` text NOT NULL,
