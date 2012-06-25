@@ -53,8 +53,8 @@ function dump()
  * @return Model
  */
 function model($modelName)
-{
-    if (class_exists($modelName)) {
+{   
+    if (0 == substr_compare($modelName, "\\", 0, 1)) {
         $modelClass = $modelName;
     } else {
         $conf = MLNPHP::getApplication()->conf;

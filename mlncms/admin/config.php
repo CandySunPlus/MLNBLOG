@@ -15,11 +15,12 @@ return array(
         'use' => 'devel',
     	'devel' => array(
     		'type' => AdapterBase::MYSQL,
-    		'host' => '127.0.0.1:3306',
-    		'username' => 'root',
-    		'password' => 'root',
-    		'dbname' => 'demo',
-            'prefix' => ''
+            'host' => '127.0.0.1:3306',
+            'username' => 'root',
+            'password' => 'root',
+            'dbname' => 'mlncms',
+            'charset' => 'utf8',
+            'prefix' => 'pre_'
     	)
     )
 );

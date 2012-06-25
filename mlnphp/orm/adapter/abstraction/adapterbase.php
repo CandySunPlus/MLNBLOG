@@ -17,7 +17,7 @@ abstract class AdapterBase
     public $tables;
     protected static $dataType;
 
-    const MYSQL = 'mysql';
+    const MYSQL = '\\MLNPHP\\ORM\\Adapter\\Mysql\\Mysql';
     const SQLITE = 'sqlite';
 
     /**
@@ -30,12 +30,9 @@ abstract class AdapterBase
     public static function getInstance($dbConfigName)
     {
         static $instance = array();
-        
-        $adapterType = ucfirst(MLNPHP::getApplication()->conf->db->$dbConfigName->type);
-        $adapterClass = "\\MLNPHP\\ORM\\Adapter\\$adapterType\\$adapterType";
 
         if (!isset($instance[$dbConfigName])) {
-            $instance[$dbConfigName] = new $adapterClass($dbConfigName);
+            $instance[$dbConfigName] = new static($dbConfigName);
         }
 
         return $instance[$dbConfigName];

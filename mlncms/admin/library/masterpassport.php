@@ -3,10 +3,10 @@ namespace APP\Library;
 
 use \MLNPHP\Helper\Passport;
 
-class ManagerPassport extends Passport
+class MasterPassport extends Passport
 {
     protected function getUserModel()
     {
-        return model('Managers');
+        return model('Masters');
     } 
 }

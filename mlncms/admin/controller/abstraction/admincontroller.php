@@ -39,6 +39,7 @@ abstract class AdminController extends ControllerBase
     {
         $visitor = Visitor::getInstance();
         if (!$visitor->isLogin()) {
+            echo 'not login';
             return false;
         }
         return $this->validatePrivilege();

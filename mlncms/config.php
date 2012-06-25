@@ -19,7 +19,8 @@ return array(
     		'username' => 'root',
     		'password' => 'root',
     		'dbname' => 'mlncms',
-            'prefix' => ''
+            'charset' => 'utf8',
+            'prefix' => 'pre_'
     	)
     )
 );

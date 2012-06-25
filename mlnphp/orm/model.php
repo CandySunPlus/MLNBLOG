@@ -27,8 +27,6 @@ abstract class Model
     protected $sqlBuilder;
     protected $loaded;
 
-    const MYSQL = '\\MLNPHP\\ORM\\Adapter\\Mysql\\Mysql';
-    
     const BELONGS_TO = 'BELONGS_TO';
     const HAS = 'HAS';
 
@@ -56,12 +54,16 @@ abstract class Model
      */
     public static function init()
     {
-        $dbConfigName = MLNPHP::getApplication()->conf->db->use;
+        $application = MLNPHP::getApplication();
+        $dbConfigName = $application->conf->db->use;
         $model = explode('\\', get_called_class());
         $tableName = strtolower(array_pop($model));
+
+        static::$dbType = $application->conf->db->$dbConfigName->type;
         static::$adapter = call_user_func(static::$dbType . '::getInstance', $dbConfigName);        
         static::$dataType = call_user_func(static::$dbType . '::getDataType');
         static::$table = static::$adapter->tables[$tableName];
+        
         if (null === static::$table) {
             throw new Exception(sprintf('数据表 %s 不存在', $tableName));
         }

@@ -28,10 +28,11 @@ abstract class Passport
      */
     public function getLoginedUser()
     {
+        $sessionKey = $this->getSessionKey();
         if ($this->userEntity == null) {
-            $userId = $_SESSION[$this->getSessionKey()]['id'];
+            $userId = isset($_SESSION[$sessionKey]['id']) ? $_SESSION[$sessionKey]['id'] : -1;
             if ($userId > 0) {
-                return $this->userModel::get($userId);
+                return call_user_func($this->userModel, '::get', $userId);
             } else {
                 return null;
             }
@@ -46,7 +47,7 @@ abstract class Passport
     {
         static $key = null;
         if (null == $key) {
-            $key = md5(session_id());
+            $key = md5('MLNPHP');
         }
         return $key;
     }
