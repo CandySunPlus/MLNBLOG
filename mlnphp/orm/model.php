@@ -57,12 +57,12 @@ abstract class Model
         $application = MLNPHP::getApplication();
         $dbConfigName = $application->conf->db->use;
         $model = explode('\\', get_called_class());
-        $tableName = strtolower(array_pop($model));
+        $tableName = $application->conf->db->$dbConfigName->prefix . strtolower(array_pop($model));
 
         static::$dbType = $application->conf->db->$dbConfigName->type;
         static::$adapter = call_user_func(static::$dbType . '::getInstance', $dbConfigName);        
         static::$dataType = call_user_func(static::$dbType . '::getDataType');
-        static::$table = static::$adapter->tables[$tableName];
+        static::$table = isset(static::$adapter->tables[$tableName]) ? static::$adapter->tables[$tableName] : null;
         
         if (null === static::$table) {
             throw new Exception(sprintf('数据表 %s 不存在', $tableName));
