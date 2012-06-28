@@ -2,13 +2,14 @@
 namespace MLNPHP\Helper;
 
 use \MLNPHP\System\View;
+use \MLNPHP\Helper\Notice;
 /**
  * Http response 类
  *
  * @author sunfengming
  */
 class Response {
-    
+
     /**
      * 设置头
      * 
@@ -79,6 +80,21 @@ class Response {
                 $memory
             );
         self::outputFile($arg, 'text/html; charset=utf-8');
+    }
+
+    /**
+     * 转向
+     * 
+     * @param string $url 地址
+     * @param mixed $msg 消息
+     * @param string $level 消息等级
+     * 
+     * @return void
+     */
+    public static function redirect($url, $msg, $level)
+    {
+        Notice::add($msg, $level);
+        header('Location:' . $url);
     }
 }
 

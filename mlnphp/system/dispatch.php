@@ -37,7 +37,6 @@ class Dispatch
 
         $controllerCls = $realCAP['controllerCls'];
         $action = $realCAP['action'];
-
         $this->runCAP($controllerCls, $action, $this->_params);
     }
 

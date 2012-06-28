@@ -4,6 +4,8 @@ namespace APP\Controller\Abstraction;
 
 use \MLNPHP\System\ControllerBase;
 use \APP\Library\Visitor;
+use \MLNPHP\Helper\Response;
+use \MLNPHP\Helper\Notice;
 
 abstract class AdminController extends ControllerBase
 {
@@ -39,7 +41,7 @@ abstract class AdminController extends ControllerBase
     {
         $visitor = Visitor::getInstance();
         if (!$visitor->isLogin()) {
-            echo 'not login';
+            Response::redirect('login', '您尚未登录！', Notice::ERROR);
             return false;
         }
         return $this->validatePrivilege();

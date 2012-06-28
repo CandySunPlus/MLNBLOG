@@ -9,4 +9,6 @@ class MasterPassport extends Passport
     {
         return model('Masters');
     } 
+
+    
 }

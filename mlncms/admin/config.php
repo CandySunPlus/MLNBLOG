@@ -10,6 +10,13 @@ return array(
 		'model' => 'APP\\Model',
 		'template' => 'APP\\View'
 	),
+    'router' => array(
+        'login' => array(
+            'controller' => 'profile',
+            'action' => 'login',
+            'param' => array()
+        )
+    ),
     'timezone' => 'Asia/Shanghai',
     'db' => array(
         'use' => 'devel',
