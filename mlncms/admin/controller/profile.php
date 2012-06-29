@@ -11,7 +11,7 @@ class Profile extends ControllerBase
     public function loginAction()
     {
         $notices = Notice::getAll(true);
-        $this->view->assign('notices', $notices);
+        $this->view->assign('notices', $notices);     
         Response::output($this->view->render('login'));
     }
 

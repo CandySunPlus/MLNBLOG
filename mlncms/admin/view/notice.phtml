@@ -1,0 +1,6 @@
+<?php
+foreach ($notices as $notice){
+    print <<<EOL
+    <div>{$notice->level}:{$notice->message}</div>        
+EOL;
+}
