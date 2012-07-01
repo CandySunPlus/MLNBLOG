@@ -44,7 +44,7 @@ abstract class AdminController extends ControllerBase
             Response::redirect('login', '您尚未登录！', Notice::ERROR);
             return false;
         }
-        return $this->validatePrivilege();
+        return $this->validatePrivilege($this->controller, $this->action);
     }
 
     /**

@@ -32,11 +32,12 @@ abstract class Passport
         if ($this->userEntity == null) {
             $userId = isset($_SESSION[$sessionKey]['id']) ? $_SESSION[$sessionKey]['id'] : -1;
             if ($userId > 0) {
-                return call_user_func($this->userModel, '::get', $userId);
+                return call_user_func($this->userModel . '::get', $userId);
             } else {
                 return null;
             }
-        }
+        } 
+        return $this->userEntity;
     }
 
     /**

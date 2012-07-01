@@ -13,14 +13,15 @@ use \MLNPHP\System\View;
 abstract class ControllerBase
 {
 	protected $request;
-	protected $response;
     protected $action;
+    protected $controller;
     protected $view;
 
 	public function __construct($params)
 	{
 		$this->request = Request::getInstance();
 		$this->request->set($params, Request::GET);	
+		$this->controller = get_called_class();
 		$this->view = new View();
 	}
 

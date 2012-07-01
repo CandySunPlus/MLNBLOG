@@ -22,7 +22,7 @@ return array(
         'use' => 'devel',
     	'devel' => array(
     		'type' => AdapterBase::MYSQL,
-            'host' => '192.168.123.190:3306',
+            'host' => '192.168.1.103:3306',
             'username' => 'root',
             'password' => 'root',
             'dbname' => 'mlncms',

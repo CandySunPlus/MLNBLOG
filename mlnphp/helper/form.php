@@ -17,7 +17,7 @@ class Form
      */
     public static function getFormToken($formId)
     {        
-        if (!isset($_SESSION['FORM_TOKEN'][$formId]) {
+        if (!isset($_SESSION['FORM_TOKEN'][$formId])) {
             $uniqid = md5(uniqid($formId));
             $_SESSION['FORM_TOKEN'][$formId] = $uniqid;
         }
@@ -35,10 +35,11 @@ class Form
     public static function compareFormToken($formId, $token)
     {
         if (isset($_SESSION['FORM_TOKEN'][$formId])) {
-            if ($token == $_SESSION['FORM_TOKEN'][$formId]) {
+            $sessionToken = $_SESSION['FORM_TOKEN'][$formId];
+            unset($_SESSION['FORM_TOKEN'][$formId]);
+            if ($token == $sessionToken) {
                 return true;
             }
-            unset($_SESSION['FORM_TOKEN'][$formId]);
         }
         return false;
     }

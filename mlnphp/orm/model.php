@@ -5,12 +5,14 @@ use \MLNPHP\MLNPHP;
 use \MLNPHP\ORM\SQLBuilder;
 use \MLNPHP\ORM\Adapter\Mysql\Mysql;
 use \MLNPHP\Helper\ArrayMap;
+use \MLNPHP\ORM\Query;
 use \Exception;
 
 /**
  * 模型基类
  * 
  * @package MLNPHP
+ * @TODO 模型方法为静态
  */
 abstract class Model
 {
@@ -24,7 +26,6 @@ abstract class Model
     protected static $relation;
     protected static $foreignKey;
     protected $data;
-    protected $sqlBuilder;
     protected $loaded;
 
     const BELONGS_TO = 'BELONGS_TO';
@@ -33,7 +34,6 @@ abstract class Model
     private function __construct($id = null)
     {
         $this->loaded = false;
-        $this->sqlBuilder = new SQLBuilder(static::$table);
         $this->data = array();
         if (null == $id) {       
             $this->_fillData();
@@ -222,8 +222,7 @@ abstract class Model
             $model = static::$relation[Model::HAS][$field];
             $model::init();            
             $pk = static::$primaryKey;
-            $modelEntity = $model::create();
-            $data = $modelEntity->select($model::$primaryKey)
+            $data = static::query()->select($model::$primaryKey)
                 ->where(static::$foreignKey, '=', $this->$pk)
                 ->fetch();
             $return = array();
@@ -248,7 +247,7 @@ abstract class Model
     {
         $pk = static::$primaryKey;
         if (!empty($this->data[$pk]) && !$this->loaded) {
-            $data = current($this->select('*')->where(static::$primaryKey, '=', $this->data[$pk])->fetch());
+            $data = current(static::query()->select('*')->where(static::$primaryKey, '=', $this->data[$pk])->fetch());
             if (false === $data) {
                 throw new Exception("无法获取指定主键实体");
             } else {
@@ -265,17 +264,17 @@ abstract class Model
      */
     public function save()
     {
-        
+        $sqlBuilder = new SQLBuilder(static::$table);
         foreach ($this->data as $field => $value) {
             $this->_validate($field, $value);
         }
 
         if (isset($this->data[static::$primaryKey])) {
             $where = static::$primaryKey . '=' . "'" . $this->data[static::$primaryKey] . "'";
-            $sql = $this->sqlBuilder->update($this->data, $where);
+            $sql = $sqlBuilder->update($this->data, $where);
             static::$adapter->query($sql);
         } else {
-            $sql = $this->sqlBuilder->insert($this->data);
+            $sql = $sqlBuilder->insert($this->data);
             static::$adapter->query($sql);
             $this->data[static::$primaryKey] = static::$adapter->insertId();
         }
@@ -291,11 +290,12 @@ abstract class Model
      */
     public function delete($delRelation = false)
     {
+        $sqlBuilder = new SQLBuilder(static::$table);
         if (null !== $this->data[static::$primaryKey]) {
             $id = $this->data[static::$primaryKey];
         }
         $where = static::$primaryKey . '=' . "'" . $this->data[static::$primaryKey] . "'";
-        $sql = $this->sqlBuilder->delete($where);
+        $sql = $sqlBuilder->delete($where);
 
         if ($delRelation) {
             foreach (static::$relation[Model::HAS] as $relation => $model) {
@@ -307,30 +307,15 @@ abstract class Model
         }
         static::$adapter->query($sql);
     } 
-    
+
     /**
-     * 获取执行结果
+     * 返回Query对象
      * 
-     * @return array 
+     * @return Query
      */
-    public function fetch()
+    public static function query()
     {
-        $sql = (string)$this->sqlBuilder;
-        $rs = static::$adapter->query($sql);
-        return static::$adapter->fetch($rs);
+        return new Query(static::$adapter, static::$table);
     }
-    
-    /**
-     * 魔法调用
-     * 
-     * @param string $funcname 函数名称
-     * @param array $args 函数参数
-     * 
-     * @return mixed
-     */
-    public function __call($funcname, $args = array())
-    {
-        call_user_func_array(array($this->sqlBuilder, $funcname), $args);
-        return $this;
-    }
+
 }

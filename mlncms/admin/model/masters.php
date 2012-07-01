@@ -11,4 +11,9 @@ class Masters extends Model
             'mastergroups' => "\\APP\\Model\\MasterGroups"
         )
     );
+    
+    public static function getUserByName($name)
+    {
+        return self::query()->select()->where('username', '=', $name)->fetch();
+    }
 }

@@ -2,8 +2,20 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-    <title></title>
+    <title>管理员登录</title>
 </head>
 <body>
-    <?php $this->import('notice');?>
+    <div class="login-box">
+        <?php foreach ($notices as $notice):?>
+        <div>[<?php $this->put($notice->level)?>]<?php $this->put($notice->message)?></div>
+        <?php endforeach; ?>
+        <form action="profile/doLogin" method="post">
+            <div class="row">用户：<input type="text" name="username" class="text" /></div>
+            <div class="row">密码：<input type="password" name="password" class="text" />
+                <input type="hidden" name="formtoken" value="<?php $this->put($loginToken)?>" />      
+            </div>
+            <div class="row"><input type="submit" value="登录" /></div>
+        </form>
+    </div>
 </body>
+</html>
